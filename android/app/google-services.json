@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "576429329225",
+    "project_id": "octarineflcrud",
+    "storage_bucket": "octarineflcrud.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:576429329225:android:0a60253c4484d07a99a898",
+        "android_client_info": {
+          "package_name": "com.example.horse_power"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "576429329225-e5cmr4aroeg3gja76ur9460chlospic8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBqf9JDqaKnTHzleFEpbjbCoYKMmRpr9kc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "576429329225-e5cmr4aroeg3gja76ur9460chlospic8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:576429329225:android:1711a715ebdaa40999a898",
+        "android_client_info": {
+          "package_name": "com.octarine.octarine_crud"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "576429329225-e5cmr4aroeg3gja76ur9460chlospic8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBqf9JDqaKnTHzleFEpbjbCoYKMmRpr9kc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "576429329225-e5cmr4aroeg3gja76ur9460chlospic8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
