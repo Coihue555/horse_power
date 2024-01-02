@@ -7,7 +7,7 @@ class HorseModel extends Equatable implements ColeccionMvc<HorseModel> {
   HorseModel({
     this.id,
     this.idMVC = '',
-    this.idItem = '',
+    this.idHorse = '',
     this.creadoEl = '',
     this.horseName = '',
     this.birthDate = '',
@@ -26,7 +26,7 @@ class HorseModel extends Equatable implements ColeccionMvc<HorseModel> {
   final String idMVC;
 
   ///Id definido por el usuario
-  final String idItem;
+  final String idHorse;
   final String horseName;
   final String birthDate;
   final String idMother;
@@ -50,8 +50,12 @@ class HorseModel extends Equatable implements ColeccionMvc<HorseModel> {
       HorseModel(
           id: id ?? this.id,
           idMVC: idMVC ?? this.idMVC,
-          idItem: data?['idItem'] ?? idItem,
+          idHorse: data?['idHorse'] ?? idHorse,
           horseName: data?['horseName'] ?? horseName,
+          birthDate: data?['birthDate'] ?? birthDate,
+          idMother: data?['idMother'] ?? idMother,
+          idFather: data?['idFather'] ?? idFather,
+          idReceivingMother: data?['idReceivingMother'] ?? idReceivingMother,
           estado: data?['estado'] ?? estado,
           creadoEl: creadoEl ?? this.creadoEl,
           lstImagenes: [...data?['lstImagenes'] ?? lstImagenes],
@@ -59,11 +63,24 @@ class HorseModel extends Equatable implements ColeccionMvc<HorseModel> {
 
   factory HorseModel.fromJson(Map<String, dynamic> json) {
     return HorseModel(
-        idItem: (json.containsKey("idItem")) ? json["idItem"].toString() : '',
-        horseName: (json.containsKey("horseName")) ? json["horseName"].toString() : '',
+        idHorse:
+            (json.containsKey("idHorse")) ? json["idHorse"].toString() : '',
+        horseName:
+            (json.containsKey("horseName")) ? json["horseName"].toString() : '',
+        birthDate:
+            (json.containsKey("birthDate")) ? json["birthDate"].toString() : '',
+        idMother:
+            (json.containsKey("idMother")) ? json["idMother"].toString() : '',
+        idFather:
+            (json.containsKey("idFather")) ? json["idFather"].toString() : '',
+        idReceivingMother: (json.containsKey("idReceivingMother"))
+            ? json["idReceivingMother"].toString()
+            : '',
         estado: (json.containsKey("estado")) ? json["estado"].toString() : '',
-        lstImagenes: (json.containsKey("lstImagenes")) ? [...json["lstImagenes"]] : [],
-        creadoEl: (json.containsKey("creadoEl")) ? json["creadoEl"].toString() : '',
+        lstImagenes:
+            (json.containsKey("lstImagenes")) ? [...json["lstImagenes"]] : [],
+        creadoEl:
+            (json.containsKey("creadoEl")) ? json["creadoEl"].toString() : '',
         idMVC: (json.containsKey("idMVC")) ? json["idMVC"].toString() : '',
         data: json);
   }
@@ -76,16 +93,24 @@ class HorseModel extends Equatable implements ColeccionMvc<HorseModel> {
   @override
   Map<String, dynamic> toJson() => {
         "idMVC": idMVC,
-        "idItem": idItem,
+        "idHorse": idHorse,
         "horseName": horseName,
+        "birthDate": birthDate,
+        "idMother": idMother,
+        "idFather": idFather,
+        "idReceivingMother": idReceivingMother,
         "estado": estado,
         "lstImagenes": lstImagenes,
         "creadoEl": creadoEl,
       };
 
   Map<String, dynamic> toJsonFormulario() => {
-        "idItem": idItem,
+        "idHorse": idHorse,
         "horseName": horseName,
+        "birthDate": birthDate,
+        "idMother": idMother,
+        "idFather": idFather,
+        "idReceivingMother": idReceivingMother,
         "estado": estado,
         "lstImagenes": lstImagenes,
       };
@@ -100,5 +125,5 @@ class HorseModel extends Equatable implements ColeccionMvc<HorseModel> {
   }
 
   @override
-  List<Object?> get props => [idItem, horseName, estado, lstImagenes];
+  List<Object?> get props => [idHorse, horseName, estado, lstImagenes];
 }
