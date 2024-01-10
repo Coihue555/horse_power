@@ -15,7 +15,7 @@ class HorseModel extends Equatable implements ColeccionMvc<HorseModel> {
     this.idFather = '',
     this.idReceivingMother = '',
     this.estado = 'A',
-    this.lstImagenes = const [],
+    this.lstImagenes = const <String>[],
     Map<String, dynamic>? data,
   }) : data = data ?? {};
 
@@ -63,24 +63,15 @@ class HorseModel extends Equatable implements ColeccionMvc<HorseModel> {
 
   factory HorseModel.fromJson(Map<String, dynamic> json) {
     return HorseModel(
-        idHorse:
-            (json.containsKey("idHorse")) ? json["idHorse"].toString() : '',
-        horseName:
-            (json.containsKey("horseName")) ? json["horseName"].toString() : '',
-        birthDate:
-            (json.containsKey("birthDate")) ? json["birthDate"].toString() : '',
-        idMother:
-            (json.containsKey("idMother")) ? json["idMother"].toString() : '',
-        idFather:
-            (json.containsKey("idFather")) ? json["idFather"].toString() : '',
-        idReceivingMother: (json.containsKey("idReceivingMother"))
-            ? json["idReceivingMother"].toString()
-            : '',
+        idHorse: (json.containsKey("idHorse")) ? json["idHorse"].toString() : '',
+        horseName: (json.containsKey("horseName")) ? json["horseName"].toString() : '',
+        birthDate: (json.containsKey("birthDate")) ? json["birthDate"].toString() : '',
+        idMother: (json.containsKey("idMother")) ? json["idMother"].toString() : '',
+        idFather: (json.containsKey("idFather")) ? json["idFather"].toString() : '',
+        idReceivingMother: (json.containsKey("idReceivingMother")) ? json["idReceivingMother"].toString() : '',
         estado: (json.containsKey("estado")) ? json["estado"].toString() : '',
-        lstImagenes:
-            (json.containsKey("lstImagenes")) ? [...json["lstImagenes"]] : [],
-        creadoEl:
-            (json.containsKey("creadoEl")) ? json["creadoEl"].toString() : '',
+        lstImagenes: (json.containsKey("lstImagenes")) ? [...json["lstImagenes"]] : <String>[],
+        creadoEl: (json.containsKey("creadoEl")) ? json["creadoEl"].toString() : '',
         idMVC: (json.containsKey("idMVC")) ? json["idMVC"].toString() : '',
         data: json);
   }

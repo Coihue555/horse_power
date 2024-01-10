@@ -14,10 +14,14 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Horse Power'),
+        backgroundColor: Colors.blueAccent,
+        title: const Text(
+          'Horse Power',
+          style: TextStyle(color: Colors.white),
+        ),
       ),
       body: FutureBuilder(
-        future: getPeople(),
+        future: getHorses(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return Center(
@@ -51,7 +55,7 @@ class _HomeState extends State<Home> {
                         return result;
                       },
                       background: Container(
-                        alignment: Alignment.centerRight,
+                        alignment: Alignment.center,
                         color: Colors.red,
                         child: const Icon(
                           Icons.delete,
@@ -59,14 +63,32 @@ class _HomeState extends State<Home> {
                         ),
                       ),
                       onDismissed: (direction) async {
-                        await deletePeople(snapshot.data?[index]['uid']);
+                        await deleteHorse(snapshot.data?[index]['uid']);
                         snapshot.data?.removeAt(index);
                       },
                       child: ListTile(
+                        hoverColor: Colors.blueAccent,
+                        selectedColor: Colors.blueAccent,
                         title: Text(snapshot.data?[index]['name']),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Nacido: ${snapshot.data?[index]['fechaNac'] ?? ''}'),
+                            Text('Madre: ${snapshot.data?[index]['madre'] ?? ''}'),
+                            Text('Padre: ${snapshot.data?[index]['padre'] ?? ''}'),
+                            Text('Receptora: ${snapshot.data?[index]['receptora'] ?? ''}'),
+                          ],
+                        ),
                         onTap: () async {
-                          await Navigator.pushNamed(context, 'editName',
-                              arguments: {"name": snapshot.data?[index]['name'], "uid": snapshot.data?[index]['uid']});
+                          await Navigator.pushNamed(context, 'editName', arguments: {
+                            "name": snapshot.data?[index]['name'],
+                            "uid": snapshot.data?[index]['uid'],
+                            "madre": snapshot.data?[index]['madre'],
+                            "padre": snapshot.data?[index]['padre'],
+                            "receptora": snapshot.data?[index]['receptora'],
+                            "fechaNac": snapshot.data?[index]['fechaNac'],
+                            "lstImagenes": snapshot.data?[index]['lstImagenes'],
+                          });
                           setState(() {});
                         },
                       ),

@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(title: 'Horse Power', initialRoute: '/', routes: {
+    return MaterialApp(debugShowCheckedModeBanner: false, title: 'Horse Power', initialRoute: '/', routes: {
       '/': (context) => const Home(),
       'addName': (context) => const AddNameView(),
       'editName': (context) => const EditNameView(),
