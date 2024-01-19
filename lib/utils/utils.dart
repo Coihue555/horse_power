@@ -6,3 +6,11 @@ extension Sizes on BuildContext {
 
   String? get route => ModalRoute.of(this)!.settings.name;
 }
+
+String capitalizar(String input) {
+  if (input.isEmpty) {
+    return input;
+  }
+
+  return input[0].toUpperCase() + input.substring(1);
+}

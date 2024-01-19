@@ -1,23 +1,23 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:horse_power/global/environment.dart';
-import 'package:horse_power/services/select_image.dart';
-import 'package:horse_power/services/upload_image.dart';
+import 'package:horse_power/utils/utils.dart';
 import 'package:horse_power/widgets/text/text_widget.dart';
 import 'package:horse_power/widgets/textfield/textfield_widget.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../services/firebase_service.dart';
 
-class EditNameView extends StatefulWidget {
-  const EditNameView({super.key});
+class EditHorseView extends StatefulWidget {
+  const EditHorseView({super.key});
 
   @override
-  State<EditNameView> createState() => _EditNameViewState();
+  State<EditHorseView> createState() => _EditHorseViewState();
 }
 
-class _EditNameViewState extends State<EditNameView> {
+class _EditHorseViewState extends State<EditHorseView> {
   TextEditingController nameController = TextEditingController();
   TextEditingController nameMotherController = TextEditingController();
   TextEditingController nameFatherController = TextEditingController();
@@ -25,7 +25,6 @@ class _EditNameViewState extends State<EditNameView> {
   TextEditingController fechaNacController = TextEditingController();
   List<dynamic> lstImagenes = List<String>.filled(7, '');
   List<XFile?> lstFiles = List<XFile?>.filled(7, XFile(''));
-  FocusNode focus1 = FocusNode();
   @override
   Widget build(BuildContext context) {
     final Map args = ModalRoute.of(context)!.settings.arguments as Map;
@@ -37,6 +36,7 @@ class _EditNameViewState extends State<EditNameView> {
     lstImagenes = args['lstImagenes'] as List<dynamic>;
     return Scaffold(
         appBar: AppBar(
+            systemOverlayStyle: const SystemUiOverlayStyle(statusBarIconBrightness: Brightness.light),
             iconTheme: const IconThemeData(color: Colors.white),
             backgroundColor: Colors.blueAccent,
             title: Text(
@@ -88,7 +88,7 @@ class _EditNameViewState extends State<EditNameView> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  lstFiles[index] == XFile('')
+                                  lstImagenes[index] == ''
                                       ? Image.file(File(lstFiles[index]!.path))
                                       : Image.network(
                                           lstImagenes[index],
@@ -117,29 +117,25 @@ class _EditNameViewState extends State<EditNameView> {
                             padding: const EdgeInsets.all(5),
                             child: InkWell(
                               onTap: () async {
-                                lstFiles[index] = await getImage();
-                                setState(() {
-                                  lstImagenes[index] = lstFiles[index]!.path;
-                                });
-                                final uploaded = await uploadImage(File(lstImagenes[index]));
-                                if (mounted) {
-                                  if (uploaded.containsKey('Ok')) {
-                                    setState(() {
-                                      lstImagenes[index] = uploaded['url'];
-                                      lstFiles[index] = uploaded['path'];
-                                    });
-                                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Imagen subida correctamente')));
-                                  } else {
-                                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Error al subir la imagen')));
-                                  }
-                                  focus1.requestFocus();
-                                }
+                                await showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return Container();
+                                    // return CargarImagen(
+                                    //   tituloImagen: lstNomImagenes[index],
+                                    //   onTap: (value) {
+                                    //     lstFiles[index] = XFile(value);
+                                    //     setState(() {});
+                                    //   },
+                                    // );
+                                  },
+                                );
                               },
                               child: Column(
                                 children: [
                                   Container(
-                                      height: 50,
                                       width: 50,
+                                      height: Sizes(context).alto * 0.2,
                                       color: Colors.grey,
                                       child: const Icon(
                                         Icons.add_a_photo_outlined,
@@ -154,18 +150,14 @@ class _EditNameViewState extends State<EditNameView> {
                       }),
                 ),
                 Center(
-                  child: Focus(
-                    focusNode: focus1,
-                    child: ElevatedButton(
-                        onPressed: () async {
-                          await updateHorse(args['uid'], nameController.text, nameMotherController.text, nameFatherController.text, nameReceiverController.text,
-                                  fechaNacController.text, lstImagenes)
-                              .then((_) {
-                            Navigator.pop(context);
-                          });
-                        },
-                        child: const Text('Actualizar')),
-                  ),
+                  child: ElevatedButton(
+                      onPressed: () async {
+                        await updateHorse(args['uid'], nameController.text, nameMotherController.text, nameFatherController.text, nameReceiverController.text,
+                            fechaNacController.text, []).then((_) {
+                          Navigator.pop(context);
+                        });
+                      },
+                      child: const Text('Actualizar')),
                 )
               ],
             ),

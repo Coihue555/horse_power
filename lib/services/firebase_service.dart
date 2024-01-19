@@ -43,7 +43,7 @@ Future<void> updateHorse(
   String padre,
   String receptora,
   String fechaNac,
-  List<dynamic> lstImagenes,
+  List<String> lstImagenes,
 ) async {
   await db
       .collection('horses')
@@ -77,3 +77,108 @@ Future<void> deleteHorse(String uid) async {
 //   final firebaseService = FirebaseService();
 //   firebaseService.addHorsee(horse);
 // }
+
+Future<List> getMadres() async {
+  List madres = [];
+  CollectionReference collectionReferenceMadres = db.collection('madres');
+
+  QuerySnapshot queryMadres = await collectionReferenceMadres.get();
+  for (var doc in queryMadres.docs) {
+    final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    final madre = {"madre": data["madre"], "uid": doc.id};
+    madres.add(madre);
+  }
+
+  return madres;
+}
+
+Future<void> addMadre(
+  String madre,
+) async {
+  await db.collection('madres').add({
+    "madre": madre,
+  });
+}
+
+Future<void> updateMadre(
+  String uid,
+  String madre,
+) async {
+  await db.collection('madres').doc(uid).set({
+    "madre": madre,
+  });
+}
+
+Future<void> deleteMadre(String uid) async {
+  await db.collection('madres').doc(uid).delete();
+}
+
+Future<List> getPadres() async {
+  List padres = [];
+  CollectionReference collectionReferencePadres = db.collection('padres');
+
+  QuerySnapshot queryPadres = await collectionReferencePadres.get();
+  for (var doc in queryPadres.docs) {
+    final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    final padre = {"padre": data["padre"], "uid": doc.id};
+    padres.add(padre);
+  }
+
+  return padres;
+}
+
+Future<void> addPadre(
+  String padre,
+) async {
+  await db.collection('padres').add({
+    "padre": padre,
+  });
+}
+
+Future<void> updatePadre(
+  String uid,
+  String padre,
+) async {
+  await db.collection('padres').doc(uid).set({
+    "padre": padre,
+  });
+}
+
+Future<void> deletePadre(String uid) async {
+  await db.collection('padres').doc(uid).delete();
+}
+
+Future<List> getReceptoras() async {
+  List receptoras = [];
+  CollectionReference collectionReferenceReceptoras = db.collection('receptoras');
+
+  QuerySnapshot queryReceptoras = await collectionReferenceReceptoras.get();
+  for (var doc in queryReceptoras.docs) {
+    final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    final receptora = {"receptora": data["receptora"], "uid": doc.id};
+    receptoras.add(receptora);
+  }
+
+  return receptoras;
+}
+
+Future<void> addReceptora(
+  String receptora,
+) async {
+  await db.collection('receptoras').add({
+    "receptora": receptora,
+  });
+}
+
+Future<void> updateReceptora(
+  String uid,
+  String receptora,
+) async {
+  await db.collection('receptoras').doc(uid).set({
+    "receptora": receptora,
+  });
+}
+
+Future<void> deleteReceptora(String uid) async {
+  await db.collection('receptoras').doc(uid).delete();
+}
