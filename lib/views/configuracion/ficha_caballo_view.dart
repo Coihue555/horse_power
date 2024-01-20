@@ -38,6 +38,24 @@ class _FichaCaballoViewState extends State<FichaCaballoView> {
     lstReceptoras = getReceptoras();
   }
 
+  Future<String>? getMadreDescription(String? madreUid) async {
+    if (madreUid == null) return '';
+    var madre = await lstMadres.then((madres) => madres.firstWhere((madre) => madre['uid'] == madreUid, orElse: () => {}));
+    return madre['madre'];
+  }
+
+  Future<String>? getPadreDescription(String? padreUid) async {
+    if (padreUid == null) return '';
+    var padre = await lstPadres.then((padres) => padres.firstWhere((padre) => padre['uid'] == padreUid, orElse: () => {}));
+    return padre['padre'];
+  }
+
+  Future<String>? getReceptoraDescription(String? receptoraUid) async {
+    if (receptoraUid == null) return '';
+    var receptora = await lstReceptoras.then((padres) => padres.firstWhere((receptora) => receptora['uid'] == receptoraUid, orElse: () => {}));
+    return receptora['receptora'];
+  }
+
   @override
   Widget build(BuildContext context) {
     final Map args = (ModalRoute.of(context)!.settings.arguments ?? {}) as Map;
@@ -83,27 +101,42 @@ class _FichaCaballoViewState extends State<FichaCaballoView> {
                             onSubmitted: (value) {
                               fechaNacController.text = value;
                             }),
-                        DynamicDropDown(
-                          label: 'madre',
-                          lstItems: lstMadres,
-                          onChanged: (p0) {
-                            nameMotherController.text = p0;
-                          },
-                        ),
-                        DynamicDropDown(
-                          label: 'padre',
-                          lstItems: lstPadres,
-                          onChanged: (p0) {
-                            nameFatherController.text = p0;
-                          },
-                        ),
-                        DynamicDropDown(
-                          label: 'receptora',
-                          lstItems: lstReceptoras,
-                          onChanged: (p0) {
-                            nameReceiverController.text = p0;
-                          },
-                        ),
+                        FutureBuilder(
+                            future: getMadreDescription(nameMotherController.text),
+                            builder: (context, snapshot) {
+                              return DynamicDropDown(
+                                label: 'madre',
+                                lstItems: lstMadres,
+                                valorSeleccionado: snapshot.data,
+                                onChanged: (p0) {
+                                  nameMotherController.text = p0;
+                                },
+                              );
+                            }),
+                        FutureBuilder(
+                            future: getPadreDescription(nameFatherController.text),
+                            builder: (context, snapshot) {
+                              return DynamicDropDown(
+                                label: 'padre',
+                                lstItems: lstPadres,
+                                valorSeleccionado: snapshot.data,
+                                onChanged: (p0) {
+                                  nameFatherController.text = p0;
+                                },
+                              );
+                            }),
+                        FutureBuilder(
+                            future: getReceptoraDescription(nameReceiverController.text),
+                            builder: (context, snapshot) {
+                              return DynamicDropDown(
+                                label: 'receptora',
+                                lstItems: lstReceptoras,
+                                valorSeleccionado: snapshot.data,
+                                onChanged: (p0) {
+                                  nameReceiverController.text = p0;
+                                },
+                              );
+                            }),
                         // SizedBox(
                         //   width: MediaQuery.of(context).size.width,
                         //   height: 230,
@@ -195,13 +228,19 @@ class _FichaCaballoViewState extends State<FichaCaballoView> {
                               await updateHorse(args['uid'], nameController.text, nameMotherController.text, nameFatherController.text,
                                       nameReceiverController.text, fechaNacController.text, lstImagenes)
                                   .then((_) {
-                                Navigator.pop(context);
+                                Navigator.pushNamed(
+                                  context,
+                                  '/',
+                                );
                               });
                             } else {
                               addHorse(nameController.text, nameMotherController.text, nameFatherController.text, nameReceiverController.text,
                                       fechaNacController.text, lstImagenes)
                                   .then((_) {
-                                Navigator.pop(context);
+                                Navigator.pushNamed(
+                                  context,
+                                  '/',
+                                );
                               });
                             }
                           },

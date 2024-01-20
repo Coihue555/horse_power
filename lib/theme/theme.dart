@@ -24,7 +24,7 @@ class ThemeModel {
   late double sizeDescripcionTextfield = 14;
   late Color colorTitulosCajasDeTexto = colorPrimario;
 
-  FlexScheme scheme = FlexScheme.bahamaBlue;
+  FlexScheme scheme = FlexScheme.blue;
 
   ThemeMode themeMode = ThemeMode.system;
 

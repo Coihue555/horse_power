@@ -26,8 +26,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(debugShowCheckedModeBanner: false, title: 'Horse Power', initialRoute: '/', routes: {
       '/': (context) => const Home(),
-      // 'addName': (context) => const AddNameView(),
-      // 'editName': (context) => const EditHorseView(),
       'lstCaballos': (context) => const CaballosView(),
       'fichaCaballo': (context) => const FichaCaballoView(),
       'lstMadres': (context) => const MadresView(),

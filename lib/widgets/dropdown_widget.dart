@@ -7,31 +7,36 @@ class DynamicDropDown extends StatefulWidget {
     required this.label,
     required this.lstItems,
     required this.onChanged,
+    this.valorSeleccionado,
   }) : super(key: key);
 
   final String label;
   final Future<List<dynamic>> lstItems;
   final Function(String) onChanged;
+  final String? valorSeleccionado;
 
   @override
   State<DynamicDropDown> createState() => _DynamicDropDownState();
 }
 
 class _DynamicDropDownState extends State<DynamicDropDown> {
-  Object? selectedItem;
+  String? selectedItem;
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<dynamic>>(
       future: widget.lstItems,
       builder: (context, snapshot) {
-        List<DropdownMenuItem<Object>> dropdownItems = (snapshot.data ?? <DropdownMenuItem<Object>>[])
-            .map<DropdownMenuItem<Object>>(
-              (dynamic option) => DropdownMenuItem<Object>(
+        List<DropdownMenuItem<String>> dropdownItems = (snapshot.data ?? <DropdownMenuItem<String>>[])
+            .map<DropdownMenuItem<String>>(
+              (dynamic option) => DropdownMenuItem<String>(
                 value: option['uid'],
                 child: SizedBox(
                   width: 300,
-                  child: Text(option[widget.label].toString()),
+                  child: Text(
+                    option[widget.label].toString(),
+                    style: const TextStyle(fontSize: 14),
+                  ),
                 ),
               ),
             )
@@ -46,11 +51,11 @@ class _DynamicDropDownState extends State<DynamicDropDown> {
                 capitalizar(widget.label),
                 style: const TextStyle(color: Colors.blue, fontSize: 17), // Customize the style as needed
               ),
-              DropdownButton<Object>(
-                hint: const Text('Seleccione una opcion'),
+              DropdownButton<String>(
+                hint: Text(widget.valorSeleccionado ?? 'Seleccione una opcion'),
                 value: selectedItem,
                 items: dropdownItems,
-                onChanged: (Object? selectedValue) {
+                onChanged: (String? selectedValue) {
                   selectedItem = selectedValue;
                   widget.onChanged.call(selectedItem.toString());
                   setState(() {});
