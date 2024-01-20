@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:horse_power/services/firebase_service.dart';
-// import 'dart:io';
-// import 'package:horse_power/global/environment.dart';
-// import 'package:horse_power/services/select_image.dart';
-// import 'package:horse_power/services/upload_image.dart';
 import 'package:horse_power/theme/theme.dart';
 import 'package:horse_power/widgets/dropdown_widget.dart';
 import 'package:horse_power/widgets/text/text_widget.dart';
 import 'package:horse_power/widgets/textfield/textfield_widget.dart';
 import 'package:flutter/services.dart';
-import 'package:image_picker/image_picker.dart';
 
 class FichaCaballoView extends StatefulWidget {
   const FichaCaballoView({super.key});
@@ -20,12 +15,12 @@ class FichaCaballoView extends StatefulWidget {
 
 class _FichaCaballoViewState extends State<FichaCaballoView> {
   TextEditingController nameController = TextEditingController();
+  TextEditingController nroChipController = TextEditingController();
   TextEditingController nameMotherController = TextEditingController();
   TextEditingController nameFatherController = TextEditingController();
-  TextEditingController nameReceiverController = TextEditingController();
+  TextEditingController nroReceiverController = TextEditingController();
   TextEditingController fechaNacController = TextEditingController();
-  List<String> lstImagenes = List<String>.filled(7, '');
-  List<XFile?> lstFiles = List<XFile?>.filled(7, XFile(''));
+  TextEditingController centroEmbController = TextEditingController();
   late Future<List<dynamic>> lstMadres;
   late Future<List<dynamic>> lstPadres;
   late Future<List<dynamic>> lstReceptoras;
@@ -60,11 +55,12 @@ class _FichaCaballoViewState extends State<FichaCaballoView> {
   Widget build(BuildContext context) {
     final Map args = (ModalRoute.of(context)!.settings.arguments ?? {}) as Map;
     nameController.text = args.containsKey('uid') ? args['name'] : '';
+    nroChipController.text = args.containsKey('uid') ? args['nroChip'] : '';
     nameMotherController.text = args.containsKey('uid') ? args['madre'] : '';
     nameFatherController.text = args.containsKey('uid') ? args['padre'] : '';
-    nameReceiverController.text = args.containsKey('uid') ? args['receptora'] : '';
+    nroReceiverController.text = args.containsKey('uid') ? args['receptora'] : '';
     fechaNacController.text = args.containsKey('uid') ? args['fechaNac'] : '';
-    //lstImagenes = args.containsKey('uid') ? args['lstImagenes'] as List<String> : <String>[];
+    centroEmbController.text = args.containsKey('uid') ? args['centroEmb'] : '';
     return LayoutBuilder(builder: (context, c) {
       return Scaffold(
           appBar: AppBar(
@@ -72,7 +68,7 @@ class _FichaCaballoViewState extends State<FichaCaballoView> {
               iconTheme: const IconThemeData(color: Colors.white),
               backgroundColor: ThemeModel().colorPrimario,
               title: TextWidget.titleLarge(
-                texto: args.containsKey('uid') ? 'Editar caballo' : 'Nueva caballo',
+                texto: args.containsKey('uid') ? 'Editar Caballo' : 'Nuevo Caballo',
                 colorTextoDark: Colors.white,
                 colorTextoLight: Colors.white,
               )),
@@ -89,8 +85,12 @@ class _FichaCaballoViewState extends State<FichaCaballoView> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         TextfieldWidget.texto(
-                          labelTitulo: 'Nombre del caballo:',
+                          labelTitulo: 'Nombre:',
                           controller: nameController,
+                        ),
+                        TextfieldWidget.numero(
+                          labelTitulo: 'Nº de Chip:',
+                          controller: nroChipController,
                         ),
                         TextfieldWidget.fecha(
                             controller: fechaNacController,
@@ -126,98 +126,21 @@ class _FichaCaballoViewState extends State<FichaCaballoView> {
                               );
                             }),
                         FutureBuilder(
-                            future: getReceptoraDescription(nameReceiverController.text),
+                            future: getReceptoraDescription(nroReceiverController.text),
                             builder: (context, snapshot) {
                               return DynamicDropDown(
                                 label: 'receptora',
                                 lstItems: lstReceptoras,
                                 valorSeleccionado: snapshot.data,
                                 onChanged: (p0) {
-                                  nameReceiverController.text = p0;
+                                  nroReceiverController.text = p0;
                                 },
                               );
                             }),
-                        // SizedBox(
-                        //   width: MediaQuery.of(context).size.width,
-                        //   height: 230,
-                        //   child: ListView.builder(
-                        //       scrollDirection: Axis.horizontal,
-                        //       itemCount: lstImagenes.length,
-                        //       itemBuilder: (context, index) {
-                        //         if (lstImagenes[index] != '') {
-                        //           return SizedBox(
-                        //               height: 100,
-                        //               width: 200,
-                        //               child: Column(
-                        //                 mainAxisAlignment: MainAxisAlignment.center,
-                        //                 children: [
-                        //                   lstFiles[index] == XFile('')
-                        //                       ? Image.file(File(lstFiles[index]!.path))
-                        //                       : Image.network(
-                        //                           lstImagenes[index],
-                        //                           fit: BoxFit.contain,
-                        //                           loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-                        //                             if (loadingProgress == null) {
-                        //                               return child;
-                        //                             } else {
-                        //                               return Center(
-                        //                                 child: CircularProgressIndicator(
-                        //                                   value: loadingProgress.expectedTotalBytes != null
-                        //                                       ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
-                        //                                       : null,
-                        //                                 ),
-                        //                               );
-                        //                             }
-                        //                           },
-                        //                         ),
-                        //                   TextWidget.textSmall(texto: lstNomImagenes[index]),
-                        //                 ],
-                        //               ));
-                        //         } else {
-                        //           return Container(
-                        //             width: 100,
-                        //             height: 100,
-                        //             padding: const EdgeInsets.all(5),
-                        //             child: InkWell(
-                        //               onTap: () async {
-                        //                 lstFiles[index] = await getImage();
-                        //                 setState(() {
-                        //                   lstImagenes[index] = lstFiles[index]!.path;
-                        //                 });
-                        //                 if (lstImagenes[index] == null) {
-                        //                   return;
-                        //                 }
-                        //                 final uploaded = await uploadImage(File(lstImagenes[index]));
-                        //                 setState(() {
-                        //                   lstImagenes[index] = uploaded['url'];
-                        //                   lstFiles[index] = uploaded['path'];
-                        //                 });
-                        //                 if (mounted) {
-                        //                   if (uploaded.containsKey('Ok')) {
-                        //                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Imagen subida correctamente')));
-                        //                   } else {
-                        //                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Error al subir la imagen')));
-                        //                   }
-                        //                 }
-                        //               },
-                        //               child: Column(
-                        //                 children: [
-                        //                   Container(
-                        //                       height: 50,
-                        //                       width: 50,
-                        //                       color: Colors.grey,
-                        //                       child: const Icon(
-                        //                         Icons.add_a_photo_outlined,
-                        //                         color: Colors.white,
-                        //                       )),
-                        //                   TextWidget.textSmall(texto: lstNomImagenes[index]),
-                        //                 ],
-                        //               ),
-                        //             ),
-                        //           );
-                        //         }
-                        //       }),
-                        // ),
+                        TextfieldWidget.texto(
+                          labelTitulo: 'Centro de embriones:',
+                          controller: centroEmbController,
+                        ),
                       ],
                     ),
                     SizedBox(
@@ -225,18 +148,16 @@ class _FichaCaballoViewState extends State<FichaCaballoView> {
                       child: ElevatedButton(
                           onPressed: () async {
                             if (args.containsKey('uid')) {
-                              await updateHorse(args['uid'], nameController.text, nameMotherController.text, nameFatherController.text,
-                                      nameReceiverController.text, fechaNacController.text, lstImagenes)
-                                  .then((_) {
+                              await updateHorse(args['uid'], nameController.text, nroChipController.text, nameMotherController.text, nameFatherController.text,
+                                  nroReceiverController.text, fechaNacController.text, centroEmbController.text, []).then((_) {
                                 Navigator.pushNamed(
                                   context,
                                   '/',
                                 );
                               });
                             } else {
-                              addHorse(nameController.text, nameMotherController.text, nameFatherController.text, nameReceiverController.text,
-                                      fechaNacController.text, lstImagenes)
-                                  .then((_) {
+                              addHorse(nameController.text, nroChipController.text, nameMotherController.text, nameFatherController.text,
+                                  nroReceiverController.text, fechaNacController.text, centroEmbController.text, []).then((_) {
                                 Navigator.pushNamed(
                                   context,
                                   '/',

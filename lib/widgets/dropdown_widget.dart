@@ -48,7 +48,7 @@ class _DynamicDropDownState extends State<DynamicDropDown> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                capitalizar(widget.label),
+                widget.label == 'receptora' ? 'Nº Receptora' : capitalizar(widget.label),
                 style: const TextStyle(color: Colors.blue, fontSize: 17), // Customize the style as needed
               ),
               DropdownButton<String>(

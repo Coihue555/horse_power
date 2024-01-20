@@ -11,10 +11,12 @@ Future<List> getHorses() async {
     final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     final horse = {
       "name": data["name"],
+      "nroChip": data["nroChip"],
       "madre": data["madre"],
       "padre": data["padre"],
       "receptora": data["receptora"],
       "fechaNac": data["fechaNac"],
+      "centroEmb": data["centroEmb"],
       "lstImagenes": data["lstImagenes"],
       "uid": doc.id
     };
@@ -26,33 +28,80 @@ Future<List> getHorses() async {
 
 Future<void> addHorse(
   String name,
+  String nroChip,
   String madre,
   String padre,
   String receptora,
   String fechaNac,
+  String centroEmb,
   List<String> lstImagenes,
 ) async {
-  await db.collection('horses').add({"name": name, "madre": madre, "padre": padre, "receptora": receptora, "fechaNac": fechaNac, "lstImagenes": lstImagenes});
+  await db.collection('horses').add({
+    "name": name,
+    "nroChip": nroChip,
+    "madre": madre,
+    "padre": padre,
+    "receptora": receptora,
+    "fechaNac": fechaNac,
+    "centroEmb": centroEmb,
+    "lstImagenes": lstImagenes
+  });
   //Firestore.instance.collection('users').document(uid).updateData({ 'name': name, 'surname': surname, 'address': address, 'level': level.toJson() });
 }
 
 Future<void> updateHorse(
   String uid,
   String name,
+  String nroChip,
   String madre,
   String padre,
   String receptora,
   String fechaNac,
+  String centroEmb,
   List<String> lstImagenes,
 ) async {
-  await db
-      .collection('horses')
-      .doc(uid)
-      .set({"name": name, "madre": madre, "padre": padre, "receptora": receptora, "fechaNac": fechaNac, "lstImagenes": lstImagenes});
+  await db.collection('horses').doc(uid).set({
+    "name": name,
+    "nroChip": nroChip,
+    "madre": madre,
+    "padre": padre,
+    "receptora": receptora,
+    "fechaNac": fechaNac,
+    "centroEmb": centroEmb,
+    "lstImagenes": lstImagenes
+  });
 }
 
 Future<void> deleteHorse(String uid) async {
   await db.collection('horses').doc(uid).delete();
+}
+
+Future<List<dynamic>> filterHorsesByName(String name) async {
+  List<dynamic> allHorses = await getHorses();
+  if (name.isEmpty) {
+    return allHorses;
+  }
+  return allHorses
+      .where((horse) => horse['name'].toLowerCase().contains(name.toLowerCase()) || horse['nroChip'].toLowerCase().contains(name.toLowerCase()))
+      .toList();
+}
+
+Future<String>? getMadreDescription(String? madreUid, Future<List<dynamic>> lstMadres) async {
+  if (madreUid == null) return '';
+  var madre = await lstMadres.then((madres) => madres.firstWhere((madre) => madre['uid'] == madreUid, orElse: () => {}));
+  return madre['madre'];
+}
+
+Future<String>? getPadreDescription(String? padreUid, Future<List<dynamic>> lstPadres) async {
+  if (padreUid == null) return '';
+  var padre = await lstPadres.then((padres) => padres.firstWhere((padre) => padre['uid'] == padreUid, orElse: () => {}));
+  return padre['padre'];
+}
+
+Future<String>? getReceptoraDescription(String? receptoraUid, Future<List<dynamic>> lstReceptoras) async {
+  if (receptoraUid == null) return '';
+  var receptora = await lstReceptoras.then((padres) => padres.firstWhere((receptora) => receptora['uid'] == receptoraUid, orElse: () => {}));
+  return receptora['receptora'];
 }
 
 // /////Testeing HorseModel

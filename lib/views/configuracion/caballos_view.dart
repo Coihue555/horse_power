@@ -28,34 +28,6 @@ class _CaballosViewState extends State<CaballosView> {
     lstHorses = getHorses();
   }
 
-  Future<List<dynamic>> filterHorsesByName(String name) async {
-    List<dynamic> allHorses = await getHorses();
-    if (name.isEmpty) {
-      return allHorses;
-    }
-
-    // Filter the list by name
-    return allHorses.where((horse) => horse['name'].toLowerCase().contains(name.toLowerCase())).toList();
-  }
-
-  Future<String>? getMadreDescription(String? madreUid) async {
-    if (madreUid == null) return '';
-    var madre = await lstMadres.then((madres) => madres.firstWhere((madre) => madre['uid'] == madreUid, orElse: () => {}));
-    return madre['madre'];
-  }
-
-  Future<String>? getPadreDescription(String? padreUid) async {
-    if (padreUid == null) return '';
-    var padre = await lstPadres.then((padres) => padres.firstWhere((padre) => padre['uid'] == padreUid, orElse: () => {}));
-    return padre['padre'];
-  }
-
-  Future<String>? getReceptoraDescription(String? receptoraUid) async {
-    if (receptoraUid == null) return '';
-    var receptora = await lstReceptoras.then((padres) => padres.firstWhere((receptora) => receptora['uid'] == receptoraUid, orElse: () => {}));
-    return receptora['receptora'];
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,12 +39,11 @@ class _CaballosViewState extends State<CaballosView> {
               controller: searchController,
               onChanged: (value) {
                 setState(() {
-                  // Filter the list based on the search input
                   lstHorses = filterHorsesByName(value);
                 });
               },
               decoration: InputDecoration(
-                labelText: 'Buscar por nombre',
+                labelText: 'Buscar por Nombre o Nro Chip',
                 labelStyle: TextStyle(color: ThemeModel().colorPrimario),
                 prefixIcon: const Icon(Icons.search),
               ),
@@ -86,6 +57,7 @@ class _CaballosViewState extends State<CaballosView> {
                   return ListView.builder(
                       itemCount: snapshot.data?.length,
                       itemBuilder: (context, index) {
+                        var item = snapshot.data?[index];
                         return snapshot.data!.isEmpty
                             ? Center(
                                 child: SizedBox(
@@ -101,7 +73,7 @@ class _CaballosViewState extends State<CaballosView> {
                                       ],
                                     )))
                             : Dismissible(
-                                key: Key(snapshot.data?[index]['uid']),
+                                key: Key(item['uid']),
                                 direction: DismissDirection.endToStart,
                                 confirmDismiss: (direction) async {
                                   bool result = await showDialog(
@@ -109,7 +81,7 @@ class _CaballosViewState extends State<CaballosView> {
                                       builder: (context) {
                                         return AlertDialog(
                                           title: const Text('Confirmar'),
-                                          content: Text('Esta seguro de eliminar ${snapshot.data?[index]['horses']}?'),
+                                          content: Text('Esta seguro de eliminar ${item['name']}?'),
                                           actions: [
                                             TextButton(
                                                 onPressed: () {
@@ -138,7 +110,7 @@ class _CaballosViewState extends State<CaballosView> {
                                   ),
                                 ),
                                 onDismissed: (direction) async {
-                                  await deleteHorse(snapshot.data?[index]['uid']);
+                                  await deleteHorse(item['uid']);
                                   snapshot.data?.removeAt(index);
                                 },
                                 child: Padding(
@@ -146,13 +118,15 @@ class _CaballosViewState extends State<CaballosView> {
                                   child: InkWell(
                                     onTap: () async {
                                       await Navigator.pushNamed(context, 'fichaCaballo', arguments: {
-                                        "name": snapshot.data?[index]['name'],
-                                        "uid": snapshot.data?[index]['uid'],
-                                        "madre": snapshot.data?[index]['madre'],
-                                        "padre": snapshot.data?[index]['padre'],
-                                        "receptora": snapshot.data?[index]['receptora'],
-                                        "fechaNac": snapshot.data?[index]['fechaNac'],
-                                        "lstImagenes": snapshot.data?[index]['lstImagenes'],
+                                        "name": item['name'],
+                                        "nroChip": item['nroChip'],
+                                        "uid": item['uid'],
+                                        "madre": item['madre'],
+                                        "padre": item['padre'],
+                                        "receptora": item['receptora'],
+                                        "fechaNac": item['fechaNac'],
+                                        "centroEmb": item['centroEmb'],
+                                        "lstImagenes": item['lstImagenes'],
                                       });
                                       setState(() {});
                                     },
@@ -163,17 +137,24 @@ class _CaballosViewState extends State<CaballosView> {
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Container(
-                                              padding: const EdgeInsets.only(left: 10),
+                                              padding: const EdgeInsets.symmetric(horizontal: 10),
                                               width: double.infinity,
                                               decoration: BoxDecoration(
                                                   color: ThemeModel().colorPrimario,
                                                   borderRadius: const BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10))),
-                                              child: TextWidget.titleLarge(
-                                                  colorTextoDark: Colors.white, colorTextoLight: Colors.white, texto: snapshot.data?[index]['name'])),
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  TextWidget.titleLarge(colorTextoDark: Colors.white, colorTextoLight: Colors.white, texto: item['name']),
+                                                  TextWidget.titleLarge(
+                                                      colorTextoDark: Colors.white, colorTextoLight: Colors.white, texto: item['nroChip'] ?? ''),
+                                                ],
+                                              )),
                                           Padding(
                                             padding: const EdgeInsets.all(8.0),
                                             child: Row(
                                               children: [
+                                                //TODO cambiar la imagen por default
                                                 Flexible(
                                                     flex: 1,
                                                     child: Image.asset(
@@ -188,22 +169,24 @@ class _CaballosViewState extends State<CaballosView> {
                                                       mainAxisAlignment: MainAxisAlignment.start,
                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                       children: [
-                                                        Text('Nacido: ${snapshot.data?[index]['fechaNac'] ?? ''}'),
+                                                        if (item['fechaNac'] != null && item['fechaNac'] != '') Text('Nacido: ${item['fechaNac'] ?? ''}'),
                                                         FutureBuilder(
-                                                            future: getMadreDescription(snapshot.data?[index]['madre']),
+                                                            future: getMadreDescription(item['madre'], lstMadres),
                                                             builder: (context, snapshotMadre) {
-                                                              return Text('Madre: ${snapshotMadre.data}');
+                                                              return Text('Madre: ${snapshotMadre.data ?? ''}');
                                                             }),
                                                         FutureBuilder(
-                                                            future: getPadreDescription(snapshot.data?[index]['padre']),
+                                                            future: getPadreDescription(item['padre'], lstPadres),
                                                             builder: (context, snapshotPadre) {
-                                                              return Text('Padre: ${snapshotPadre.data}');
+                                                              return Text('Padre: ${snapshotPadre.data ?? ''}');
                                                             }),
                                                         FutureBuilder(
-                                                            future: getReceptoraDescription(snapshot.data?[index]['receptora']),
+                                                            future: getReceptoraDescription(item['receptora'], lstReceptoras),
                                                             builder: (context, snapshotReceptora) {
-                                                              return Text('Receptora: ${snapshotReceptora.data}');
+                                                              return Text('Receptora: ${snapshotReceptora.data ?? ''}');
                                                             }),
+                                                        if (item['centroEmb'] != null && item['centroEmb'] != '')
+                                                          Text('Centro Embriones: ${item['centroEmb'] ?? ''}'),
                                                       ],
                                                     ),
                                                   ),
