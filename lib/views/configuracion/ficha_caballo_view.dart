@@ -1,7 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:horse_power/services/firebase_service.dart';
 import 'package:horse_power/theme/theme.dart';
 import 'package:horse_power/widgets/dropdown_widget.dart';
+import 'package:horse_power/widgets/image_loader.dart';
 import 'package:horse_power/widgets/text/text_widget.dart';
 import 'package:horse_power/widgets/textfield/textfield_widget.dart';
 import 'package:flutter/services.dart';
@@ -21,6 +24,7 @@ class _FichaCaballoViewState extends State<FichaCaballoView> {
   TextEditingController nroReceiverController = TextEditingController();
   TextEditingController fechaNacController = TextEditingController();
   TextEditingController centroEmbController = TextEditingController();
+  List<String> lstImagenes = List<String>.filled(7, '');
   late Future<List<dynamic>> lstMadres;
   late Future<List<dynamic>> lstPadres;
   late Future<List<dynamic>> lstReceptoras;
@@ -61,6 +65,15 @@ class _FichaCaballoViewState extends State<FichaCaballoView> {
     nroReceiverController.text = args.containsKey('uid') ? args['receptora'] : '';
     fechaNacController.text = args.containsKey('uid') ? args['fechaNac'] : '';
     centroEmbController.text = args.containsKey('uid') ? args['centroEmb'] : '';
+    if (args.containsKey('uid')) {
+      var tempList = <String>[];
+      for (var element in args['lstImagenes']) {
+        tempList.add(element);
+      }
+      lstImagenes = tempList;
+    } else {
+      lstImagenes = List.generate(7, (index) => '');
+    }
     return LayoutBuilder(builder: (context, c) {
       return Scaffold(
           appBar: AppBar(
@@ -141,23 +154,49 @@ class _FichaCaballoViewState extends State<FichaCaballoView> {
                           labelTitulo: 'Centro de embriones:',
                           controller: centroEmbController,
                         ),
+                        ImageUploadWidget(
+                            imagesOnline: lstImagenes,
+                            onImagesSelected: (images) {
+                              setState(() {
+                                lstImagenes = images;
+                                log(lstImagenes.toString());
+                              });
+                            }),
                       ],
                     ),
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
                           onPressed: () async {
+                            if (nameController.text.isEmpty) {}
                             if (args.containsKey('uid')) {
-                              await updateHorse(args['uid'], nameController.text, nroChipController.text, nameMotherController.text, nameFatherController.text,
-                                  nroReceiverController.text, fechaNacController.text, centroEmbController.text, []).then((_) {
+                              await updateHorse(
+                                args['uid'],
+                                nameController.text,
+                                nroChipController.text,
+                                nameMotherController.text,
+                                nameFatherController.text,
+                                nroReceiverController.text,
+                                fechaNacController.text,
+                                centroEmbController.text,
+                                lstImagenes,
+                              ).then((_) {
                                 Navigator.pushNamed(
                                   context,
                                   '/',
                                 );
                               });
                             } else {
-                              addHorse(nameController.text, nroChipController.text, nameMotherController.text, nameFatherController.text,
-                                  nroReceiverController.text, fechaNacController.text, centroEmbController.text, []).then((_) {
+                              addHorse(
+                                nameController.text,
+                                nroChipController.text,
+                                nameMotherController.text,
+                                nameFatherController.text,
+                                nroReceiverController.text,
+                                fechaNacController.text,
+                                centroEmbController.text,
+                                lstImagenes,
+                              ).then((_) {
                                 Navigator.pushNamed(
                                   context,
                                   '/',
