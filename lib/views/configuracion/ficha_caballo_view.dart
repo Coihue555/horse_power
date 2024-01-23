@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:horse_power/services/firebase_service.dart';
 import 'package:horse_power/theme/theme.dart';

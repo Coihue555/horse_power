@@ -40,7 +40,7 @@ class ImageUploadWidgetState extends State<ImageUploadWidget> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 120,
+      height: 200,
       child: ListView.builder(
           scrollDirection: Axis.horizontal,
           itemCount: selectedImages.length,
@@ -77,16 +77,18 @@ class ImageUploadWidgetState extends State<ImageUploadWidget> {
                 },
                 child: Column(
                   children: [
+                    TextWidget.textMedium(texto: lstNomImagenes[index]),
                     Container(
-                      width: 80,
-                      height: 80,
+                      width: 100,
+                      height: 100,
                       decoration:
                           BoxDecoration(color: Colors.white, border: Border.all(color: Colors.grey), borderRadius: const BorderRadius.all(Radius.circular(5))),
                       child: widget.imagesOnline[index] == ''
                           ? const Icon(Icons.add)
                           : Image.network(
+                              height: 100,
                               widget.imagesOnline[index],
-                              fit: BoxFit.contain,
+                              fit: BoxFit.cover,
                               loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
                                 if (loadingProgress == null) {
                                   return child;
@@ -102,7 +104,54 @@ class ImageUploadWidgetState extends State<ImageUploadWidget> {
                               },
                             ),
                     ),
-                    TextWidget.textMedium(texto: lstNomImagenes[index]),
+                    if (widget.imagesOnline[index] != '')
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.delete),
+                            onPressed: () {
+                              // Handle delete action
+                              setState(() {
+                                // Perform deletion logic here
+                                widget.imagesOnline[index] = '';
+                                widget.onImagesSelected(widget.imagesOnline.map((image) => image).toList());
+                              });
+                            },
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.edit),
+                            onPressed: () async {
+                              // Handle edit action
+                              await showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    scrollable: true,
+                                    title: TextWidget.headLineSmall(texto: 'Elija una opcion:'),
+                                    content: Column(
+                                      children: [
+                                        ElevatedButton(
+                                            onPressed: () {
+                                              pickImage(index, ImageSource.gallery);
+                                              Navigator.pop(context);
+                                            },
+                                            child: TextWidget.textMedium(texto: 'Subir archivo')),
+                                        ElevatedButton(
+                                            onPressed: () {
+                                              pickImage(index, ImageSource.camera);
+                                              Navigator.pop(context);
+                                            },
+                                            child: TextWidget.textMedium(texto: 'Tomar foto')),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                          ),
+                        ],
+                      ),
                   ],
                 ),
               ),

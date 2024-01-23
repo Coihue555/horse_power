@@ -143,7 +143,7 @@ class _CaballosViewState extends State<CaballosView> {
                                               flex: 1,
                                               child: item['lstImagenes'][0] == ''
                                                   ? Image.asset(
-                                                      'assets\no-image.jpg',
+                                                      'assets/no-image.jpg',
                                                       fit: BoxFit.contain,
                                                     )
                                                   : Image.network(
