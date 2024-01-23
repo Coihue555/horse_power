@@ -139,13 +139,17 @@ class _CaballosViewState extends State<CaballosView> {
                                       padding: const EdgeInsets.all(8.0),
                                       child: Row(
                                         children: [
-                                          //TODO cambiar la imagen por default
                                           Flexible(
                                               flex: 1,
-                                              child: Image.asset(
-                                                'assets/horse_front.png',
-                                                fit: BoxFit.contain,
-                                              )),
+                                              child: item['lstImagenes'][0] == ''
+                                                  ? Image.asset(
+                                                      'assets\no-image.jpg',
+                                                      fit: BoxFit.contain,
+                                                    )
+                                                  : Image.network(
+                                                      item['lstImagenes'][0],
+                                                      fit: BoxFit.contain,
+                                                    )),
                                           Flexible(
                                             flex: 4,
                                             child: Padding(
@@ -156,19 +160,37 @@ class _CaballosViewState extends State<CaballosView> {
                                                 children: [
                                                   if (item['fechaNac'] != null && item['fechaNac'] != '') Text('Nacido: ${item['fechaNac'] ?? ''}'),
                                                   FutureBuilder(
-                                                      future: getMadreDescription(item['madre'], lstMadres),
+                                                      future: getMadreDescription('madre', item['madre'], lstMadres),
                                                       builder: (context, snapshotMadre) {
-                                                        return Text('Madre: ${snapshotMadre.data ?? ''}');
+                                                        if (snapshot.connectionState == ConnectionState.waiting) {
+                                                          return const CircularProgressIndicator();
+                                                        } else if (snapshot.hasError) {
+                                                          return Text("Errorrrr: ${snapshot.error}");
+                                                        } else {
+                                                          return Text('Madre: ${snapshotMadre.data ?? ''}');
+                                                        }
                                                       }),
                                                   FutureBuilder(
                                                       future: getPadreDescription(item['padre'], lstPadres),
                                                       builder: (context, snapshotPadre) {
-                                                        return Text('Padre: ${snapshotPadre.data ?? ''}');
+                                                        if (snapshot.connectionState == ConnectionState.waiting) {
+                                                          return const CircularProgressIndicator();
+                                                        } else if (snapshot.hasError) {
+                                                          return Text("Errorrrr: ${snapshot.error}");
+                                                        } else {
+                                                          return Text('Padre: ${snapshotPadre.data ?? ''}');
+                                                        }
                                                       }),
                                                   FutureBuilder(
                                                       future: getReceptoraDescription(item['receptora'], lstReceptoras),
                                                       builder: (context, snapshotReceptora) {
-                                                        return Text('Receptora: ${snapshotReceptora.data ?? ''}');
+                                                        if (snapshot.connectionState == ConnectionState.waiting) {
+                                                          return const CircularProgressIndicator();
+                                                        } else if (snapshot.hasError) {
+                                                          return Text("Errorrrr: ${snapshot.error}");
+                                                        } else {
+                                                          return Text('Nº Receptora: ${snapshotReceptora.data ?? ''}');
+                                                        }
                                                       }),
                                                   if (item['centroEmb'] != null && item['centroEmb'] != '')
                                                     Text('Centro Embriones: ${item['centroEmb'] ?? ''}'),

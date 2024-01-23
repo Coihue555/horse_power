@@ -27,43 +27,49 @@ class _DynamicDropDownState extends State<DynamicDropDown> {
     return FutureBuilder<List<dynamic>>(
       future: widget.lstItems,
       builder: (context, snapshot) {
-        List<DropdownMenuItem<String>> dropdownItems = (snapshot.data ?? <DropdownMenuItem<String>>[])
-            .map<DropdownMenuItem<String>>(
-              (dynamic option) => DropdownMenuItem<String>(
-                value: option['uid'],
-                child: SizedBox(
-                  width: 300,
-                  child: Text(
-                    option[widget.label].toString(),
-                    style: const TextStyle(fontSize: 14),
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+          return Text("ErrorssAtDropdown: ${snapshot.error}");
+        } else {
+          List<DropdownMenuItem<String>> dropdownItems = (snapshot.data ?? <DropdownMenuItem<String>>[])
+              .map<DropdownMenuItem<String>>(
+                (dynamic option) => DropdownMenuItem<String>(
+                  value: option['uid'],
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.85,
+                    child: Text(
+                      option[widget.label].toString(),
+                      style: const TextStyle(fontSize: 14),
+                    ),
                   ),
                 ),
-              ),
-            )
-            .toList();
+              )
+              .toList();
 
-        return SizedBox(
-          width: MediaQuery.of(context).size.width,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                widget.label == 'receptora' ? 'Nº Receptora' : capitalizar(widget.label),
-                style: const TextStyle(color: Colors.blue, fontSize: 17), // Customize the style as needed
-              ),
-              DropdownButton<String>(
-                hint: Text(widget.valorSeleccionado ?? 'Seleccione una opcion'),
-                value: selectedItem,
-                items: dropdownItems,
-                onChanged: (String? selectedValue) {
-                  selectedItem = selectedValue;
-                  widget.onChanged.call(selectedItem.toString());
-                  setState(() {});
-                },
-              ),
-            ],
-          ),
-        );
+          return SizedBox(
+            width: MediaQuery.of(context).size.width,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.label == 'receptora' ? 'Nº Receptora' : capitalizar(widget.label),
+                  style: const TextStyle(color: Colors.blue, fontSize: 17),
+                ),
+                DropdownButton<String>(
+                  hint: Text(widget.valorSeleccionado ?? 'Seleccione una opcion'),
+                  value: selectedItem,
+                  items: dropdownItems,
+                  onChanged: (String? selectedValue) {
+                    selectedItem = selectedValue;
+                    widget.onChanged.call(selectedItem.toString());
+                    setState(() {});
+                  },
+                ),
+              ],
+            ),
+          );
+        }
       },
     );
   }

@@ -26,6 +26,28 @@ Future<List> getHorses() async {
   return horses;
 }
 
+Future<dynamic> getHorseByUid(String uid) async {
+  CollectionReference collectionReferenceHorses = db.collection('horses');
+
+  QuerySnapshot queryHorses = await collectionReferenceHorses.get();
+  var horse = {};
+  for (var doc in queryHorses.docs) {
+    final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    horse = {
+      "name": data["name"],
+      "nroChip": data["nroChip"],
+      "madre": data["madre"],
+      "padre": data["padre"],
+      "receptora": data["receptora"],
+      "fechaNac": data["fechaNac"],
+      "centroEmb": data["centroEmb"],
+      "lstImagenes": data["lstImagenes"],
+      "uid": doc.id
+    };
+  }
+  return horse;
+}
+
 Future<void> addHorse(
   String name,
   String nroChip,
@@ -86,7 +108,13 @@ Future<List<dynamic>> filterHorsesByName(String name) async {
       .toList();
 }
 
-Future<String>? getMadreDescription(String? madreUid, Future<List<dynamic>> lstMadres) async {
+Future<String>? getItemDescription(String label, String? itemUid, Future<List<dynamic>> lstItem) async {
+  if (itemUid == null) return '';
+  var item = await lstItem.then((items) => items.firstWhere((item) => item['uid'] == itemUid, orElse: () => {}));
+  return item[label] ?? 'Seleccione una opcion';
+}
+
+Future<String>? getMadreDescription(String label, String? madreUid, Future<List<dynamic>> lstMadres) async {
   if (madreUid == null) return '';
   var madre = await lstMadres.then((madres) => madres.firstWhere((madre) => madre['uid'] == madreUid, orElse: () => {}));
   return madre['madre'];
