@@ -49,7 +49,7 @@ class _CasosViewState extends State<CasosView> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextField(
-                    //autofocus: true,
+                    autofocus: true,
                     controller: searchController,
                     onChanged: (value) {
                       setState(() {
