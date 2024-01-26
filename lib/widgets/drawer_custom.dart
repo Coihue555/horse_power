@@ -1,5 +1,6 @@
-import 'package:horse_power/widgets/text/text_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:horse_power/widgets/text/text_widget.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class MenuLateral extends StatelessWidget {
   const MenuLateral({
@@ -9,10 +10,14 @@ class MenuLateral extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      backgroundColor: Colors.white,
       child: ListView(
         children: [
           ListTile(
-            title: TextWidget.headLineSmall(texto: 'INICIO'),
+            leading: const Icon(
+              Icons.home,
+            ),
+            title: TextWidget.headLineSmall(texto: 'Inicio'),
             onTap: () {
               Navigator.pushNamed(
                 context,
@@ -21,7 +26,10 @@ class MenuLateral extends StatelessWidget {
             },
           ),
           ListTile(
-            title: TextWidget.headLineSmall(texto: 'MADRES'),
+            leading: const Icon(
+              FontAwesomeIcons.horse,
+            ),
+            title: TextWidget.headLineSmall(texto: 'Madres'),
             onTap: () {
               Navigator.pushNamed(
                 context,
@@ -30,7 +38,10 @@ class MenuLateral extends StatelessWidget {
             },
           ),
           ListTile(
-            title: TextWidget.headLineSmall(texto: 'PADRES'),
+            leading: const Icon(
+              FontAwesomeIcons.horseHead,
+            ),
+            title: TextWidget.headLineSmall(texto: 'Padres'),
             onTap: () {
               Navigator.pushNamed(
                 context,
@@ -39,11 +50,26 @@ class MenuLateral extends StatelessWidget {
             },
           ),
           ListTile(
-            title: TextWidget.headLineSmall(texto: 'RECEPTORAS'),
+            leading: const Icon(
+              FontAwesomeIcons.houseChimneyMedical,
+            ),
+            title: TextWidget.headLineSmall(texto: 'Receptoras'),
             onTap: () {
               Navigator.pushNamed(
                 context,
                 'lstReceptoras',
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(
+              FontAwesomeIcons.fileMedical,
+            ),
+            title: TextWidget.headLineSmall(texto: 'Casos Clínicos'),
+            onTap: () {
+              Navigator.pushNamed(
+                context,
+                'lstCasos',
               );
             },
           )

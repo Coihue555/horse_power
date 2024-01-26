@@ -108,28 +108,41 @@ Future<List<dynamic>> filterHorsesByName(String name) async {
       .toList();
 }
 
+Future<List> findMatchingCases(String horseName) async {
+  List<dynamic> lstHorses = await getHorses();
+  List<dynamic> lstCasos = await getCasos();
+
+  if (horseName.isEmpty) {
+    return lstCasos;
+  } else {
+    List<String> matchingHorseUids = [];
+    for (var horse in lstHorses) {
+      if (horse['name'].toLowerCase().contains(horseName.toLowerCase())) {
+        matchingHorseUids.add(horse['uid']);
+      }
+    }
+
+    List<Map<String, dynamic>> matchingCases = [];
+    for (var caso in lstCasos) {
+      if (matchingHorseUids.contains(caso['caballo'])) {
+        matchingCases.add(caso);
+      }
+    }
+    return matchingCases;
+  }
+}
+
+///Recibe un uid y retorna el valor de la clave 'label'
 Future<String>? getItemDescription(String label, String? itemUid, Future<List<dynamic>> lstItem) async {
   if (itemUid == null) return '';
   var item = await lstItem.then((items) => items.firstWhere((item) => item['uid'] == itemUid, orElse: () => {}));
   return item[label] ?? 'Seleccione una opcion';
 }
 
-Future<String>? getMadreDescription(String label, String? madreUid, Future<List<dynamic>> lstMadres) async {
-  if (madreUid == null) return '';
-  var madre = await lstMadres.then((madres) => madres.firstWhere((madre) => madre['uid'] == madreUid, orElse: () => {}));
-  return madre['madre'];
-}
-
-Future<String>? getPadreDescription(String? padreUid, Future<List<dynamic>> lstPadres) async {
-  if (padreUid == null) return '';
-  var padre = await lstPadres.then((padres) => padres.firstWhere((padre) => padre['uid'] == padreUid, orElse: () => {}));
-  return padre['padre'];
-}
-
-Future<String>? getReceptoraDescription(String? receptoraUid, Future<List<dynamic>> lstReceptoras) async {
-  if (receptoraUid == null) return '';
-  var receptora = await lstReceptoras.then((padres) => padres.firstWhere((receptora) => receptora['uid'] == receptoraUid, orElse: () => {}));
-  return receptora['receptora'];
+Future<String>? getItemName(String label, String? itemUid, Future<List<dynamic>> lstItem) async {
+  if (itemUid == null) return '';
+  var item = await lstItem.then((items) => items.firstWhere((item) => item['uid'] == itemUid, orElse: () => {}));
+  return item[label] ?? 'Seleccione una opcion';
 }
 
 // /////Testeing HorseModel
@@ -258,4 +271,47 @@ Future<void> updateReceptora(
 
 Future<void> deleteReceptora(String uid) async {
   await db.collection('receptoras').doc(uid).delete();
+}
+
+Future<List> getCasos() async {
+  List casos = [];
+  CollectionReference collectionReferenceCasos = db.collection('casos');
+
+  QuerySnapshot queryCasos = await collectionReferenceCasos.get();
+  for (var doc in queryCasos.docs) {
+    final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    final caso = {
+      "uid": doc.id,
+      "caballo": data["caballo"],
+      "fechaCaso": data["fechaCaso"],
+      "observaciones": data["observaciones"],
+      "lstImagenes": data["lstImagenes"],
+    };
+    casos.add(caso);
+  }
+
+  return casos;
+}
+
+Future<void> addCaso(
+  String caballo,
+  String fechaCaso,
+  String observaciones,
+  List<String> lstImagenes,
+) async {
+  await db.collection('casos').add({"caballo": caballo, "fechaCaso": fechaCaso, "observaciones": observaciones, "lstImagenes": lstImagenes});
+}
+
+Future<void> updateCaso(
+  String uid,
+  String caballo,
+  String fechaCaso,
+  String observaciones,
+  List<String> lstImagenes,
+) async {
+  await db.collection('casos').doc(uid).set({"caballo": caballo, "fechaCaso": fechaCaso, "observaciones": observaciones, "lstImagenes": lstImagenes});
+}
+
+Future<void> deleteCaso(String uid) async {
+  await db.collection('casos').doc(uid).delete();
 }

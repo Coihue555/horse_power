@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:horse_power/views/casos/casos_view.dart';
+import 'package:horse_power/views/casos/ficha_caso_view.dart';
 import 'package:horse_power/views/configuracion/caballos_view.dart';
 import 'package:horse_power/views/configuracion/ficha_caballo_view.dart';
 import 'package:horse_power/views/configuracion/ficha_madre_view.dart';
@@ -34,6 +36,8 @@ class MyApp extends StatelessWidget {
       'fichaPadre': (context) => const FichaPadreView(),
       'lstReceptoras': (context) => const ReceptorasView(),
       'fichaReceptora': (context) => const FichaReceptoraView(),
+      'lstCasos': (context) => const CasosView(),
+      'fichaCaso': (context) => const FichaCasoView(),
     });
   }
 }

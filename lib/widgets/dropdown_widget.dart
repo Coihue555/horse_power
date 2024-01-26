@@ -39,7 +39,7 @@ class _DynamicDropDownState extends State<DynamicDropDown> {
                   child: SizedBox(
                     width: MediaQuery.of(context).size.width * 0.85,
                     child: Text(
-                      option[widget.label].toString(),
+                      option[widget.label == 'horse' ? 'name' : widget.label].toString(),
                       style: const TextStyle(fontSize: 14),
                     ),
                   ),
@@ -53,7 +53,9 @@ class _DynamicDropDownState extends State<DynamicDropDown> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  widget.label == 'receptora' ? 'Nº Receptora' : capitalizar(widget.label),
+                  labelToTitulo(
+                    widget.label,
+                  ),
                   style: const TextStyle(color: Colors.blue, fontSize: 17),
                 ),
                 DropdownButton<String>(
@@ -72,5 +74,18 @@ class _DynamicDropDownState extends State<DynamicDropDown> {
         }
       },
     );
+  }
+
+  String labelToTitulo(String label) {
+    String titulo = '';
+    if (label == 'receptora') {
+      titulo = 'Nº Receptora';
+    } else if (label == 'horse') {
+      titulo = 'Caballo';
+    } else {
+      titulo = label;
+    }
+
+    return capitalizar(titulo);
   }
 }

@@ -102,109 +102,99 @@ class _CaballosViewState extends State<CaballosView> {
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
                             child: InkWell(
-                              onTap: () async {
-                                await Navigator.pushNamed(context, 'fichaCaballo', arguments: {
-                                  "name": item['name'],
-                                  "nroChip": item['nroChip'],
-                                  "uid": item['uid'],
-                                  "madre": item['madre'],
-                                  "padre": item['padre'],
-                                  "receptora": item['receptora'],
-                                  "fechaNac": item['fechaNac'],
-                                  "centroEmb": item['centroEmb'],
-                                  "lstImagenes": item['lstImagenes'],
-                                });
-                                setState(() {});
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    border: Border.all(color: ThemeModel().colorPrimario), borderRadius: const BorderRadius.all(Radius.circular(10))),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                                        width: double.infinity,
-                                        decoration: BoxDecoration(
-                                            color: ThemeModel().colorPrimario,
-                                            borderRadius: const BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10))),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            TextWidget.titleLarge(colorTextoDark: Colors.white, colorTextoLight: Colors.white, texto: item['name']),
-                                            TextWidget.titleLarge(colorTextoDark: Colors.white, colorTextoLight: Colors.white, texto: item['nroChip'] ?? ''),
-                                          ],
-                                        )),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Row(
-                                        children: [
-                                          Flexible(
-                                              flex: 1,
-                                              child: item['lstImagenes'][0] == ''
-                                                  ? Image.asset(
-                                                      'assets/no-image.jpg',
-                                                      fit: BoxFit.contain,
-                                                    )
-                                                  : Image.network(
-                                                      item['lstImagenes'][0],
-                                                      fit: BoxFit.contain,
-                                                    )),
-                                          Flexible(
-                                            flex: 4,
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(left: 5),
-                                              child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  if (item['fechaNac'] != null && item['fechaNac'] != '') Text('Nacido: ${item['fechaNac'] ?? ''}'),
-                                                  FutureBuilder(
-                                                      future: getMadreDescription('madre', item['madre'], lstMadres),
-                                                      builder: (context, snapshotMadre) {
-                                                        if (snapshot.connectionState == ConnectionState.waiting) {
-                                                          return const CircularProgressIndicator();
-                                                        } else if (snapshot.hasError) {
-                                                          return Text("Errorrrr: ${snapshot.error}");
-                                                        } else {
-                                                          return Text('Madre: ${snapshotMadre.data ?? ''}');
-                                                        }
-                                                      }),
-                                                  FutureBuilder(
-                                                      future: getPadreDescription(item['padre'], lstPadres),
-                                                      builder: (context, snapshotPadre) {
-                                                        if (snapshot.connectionState == ConnectionState.waiting) {
-                                                          return const CircularProgressIndicator();
-                                                        } else if (snapshot.hasError) {
-                                                          return Text("Errorrrr: ${snapshot.error}");
-                                                        } else {
-                                                          return Text('Padre: ${snapshotPadre.data ?? ''}');
-                                                        }
-                                                      }),
-                                                  FutureBuilder(
-                                                      future: getReceptoraDescription(item['receptora'], lstReceptoras),
-                                                      builder: (context, snapshotReceptora) {
-                                                        if (snapshot.connectionState == ConnectionState.waiting) {
-                                                          return const CircularProgressIndicator();
-                                                        } else if (snapshot.hasError) {
-                                                          return Text("Errorrrr: ${snapshot.error}");
-                                                        } else {
-                                                          return Text('Nº Receptora: ${snapshotReceptora.data ?? ''}');
-                                                        }
-                                                      }),
-                                                  if (item['centroEmb'] != null && item['centroEmb'] != '')
-                                                    Text('Centro Embriones: ${item['centroEmb'] ?? ''}'),
-                                                ],
-                                              ),
+                                onTap: () async {
+                                  await Navigator.pushNamed(context, 'fichaCaballo', arguments: {
+                                    "name": item['name'],
+                                    "nroChip": item['nroChip'],
+                                    "uid": item['uid'],
+                                    "madre": item['madre'],
+                                    "padre": item['padre'],
+                                    "receptora": item['receptora'],
+                                    "fechaNac": item['fechaNac'],
+                                    "centroEmb": item['centroEmb'],
+                                    "lstImagenes": item['lstImagenes'],
+                                  });
+                                  setState(() {});
+                                },
+                                child: Container(
+                                  margin: const EdgeInsets.all(4.0),
+                                  decoration: BoxDecoration(
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.5),
+                                        spreadRadius: 5,
+                                        blurRadius: 7,
+                                        offset: const Offset(0, 3),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Card(
+                                    elevation: 0,
+                                    child: ListTile(
+                                      tileColor: Colors.white,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      leading: item['lstImagenes'][0] == ''
+                                          ? Image.asset(
+                                              'assets/no-image.jpg',
+                                              fit: BoxFit.contain,
+                                            )
+                                          : Image.network(
+                                              item['lstImagenes'][0],
+                                              fit: BoxFit.contain,
                                             ),
-                                          ),
+                                      title: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          TextWidget.titleLarge(texto: item['name']),
+                                          TextWidget.titleLarge(texto: item['nroChip'] ?? ''),
                                         ],
                                       ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
+                                      subtitle: Column(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          if (item['fechaNac'] != null && item['fechaNac'] != '') Text('Nacido: ${item['fechaNac'] ?? ''}'),
+                                          FutureBuilder(
+                                              future: getItemDescription('madre', item['madre'], lstMadres),
+                                              builder: (context, snapshotMadre) {
+                                                if (snapshot.connectionState == ConnectionState.waiting) {
+                                                  return const CircularProgressIndicator();
+                                                } else if (snapshot.hasError) {
+                                                  return Text("Errorrrr: ${snapshot.error}");
+                                                } else {
+                                                  return Text('Madre: ${snapshotMadre.data ?? ''}');
+                                                }
+                                              }),
+                                          FutureBuilder(
+                                              future: getItemDescription('padre', item['padre'], lstPadres),
+                                              builder: (context, snapshotPadre) {
+                                                if (snapshot.connectionState == ConnectionState.waiting) {
+                                                  return const CircularProgressIndicator();
+                                                } else if (snapshot.hasError) {
+                                                  return Text("Errorrrr: ${snapshot.error}");
+                                                } else {
+                                                  return Text('Padre: ${snapshotPadre.data ?? ''}');
+                                                }
+                                              }),
+                                          FutureBuilder(
+                                              future: getItemDescription('receptora', item['receptora'], lstReceptoras),
+                                              builder: (context, snapshotReceptora) {
+                                                if (snapshot.connectionState == ConnectionState.waiting) {
+                                                  return const CircularProgressIndicator();
+                                                } else if (snapshot.hasError) {
+                                                  return Text("Errorrrr: ${snapshot.error}");
+                                                } else {
+                                                  return Text('Nº Receptora: ${snapshotReceptora.data ?? ''}');
+                                                }
+                                              }),
+                                          if (item['centroEmb'] != null && item['centroEmb'] != '') Text('Centro Embriones: ${item['centroEmb'] ?? ''}'),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                )),
                           ),
                         );
                       }),

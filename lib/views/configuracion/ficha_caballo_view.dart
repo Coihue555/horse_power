@@ -26,6 +26,7 @@ class _FichaCaballoViewState extends State<FichaCaballoView> {
   late Future<List<dynamic>> lstMadres;
   late Future<List<dynamic>> lstPadres;
   late Future<List<dynamic>> lstReceptoras;
+  late Future<List<dynamic>> lstCasos;
   late Map args = {};
 
   @override
@@ -38,6 +39,7 @@ class _FichaCaballoViewState extends State<FichaCaballoView> {
     lstMadres = getMadres();
     lstPadres = getPadres();
     lstReceptoras = getReceptoras();
+    lstCasos = getCasos();
   }
 
   void cargarDatos(Map<dynamic, dynamic> args) async {
@@ -194,40 +196,43 @@ class _FichaCaballoViewState extends State<FichaCaballoView> {
                     width: double.infinity,
                     child: ElevatedButton(
                         onPressed: () async {
-                          if (nameController.text.isEmpty) {}
-                          if (args.containsKey('uid')) {
-                            await updateHorse(
-                              args['uid'],
-                              nameController.text,
-                              nroChipController.text,
-                              nameMotherController.text,
-                              nameFatherController.text,
-                              nroReceiverController.text,
-                              fechaNacController.text,
-                              centroEmbController.text,
-                              lstImagenes,
-                            ).then((_) {
-                              Navigator.pushNamed(
-                                context,
-                                '/',
-                              );
-                            });
+                          if (nameController.text.isEmpty || nroChipController.text.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Nombre y Nº Chip no pueden estar vacios')));
                           } else {
-                            addHorse(
-                              nameController.text,
-                              nroChipController.text,
-                              nameMotherController.text,
-                              nameFatherController.text,
-                              nroReceiverController.text,
-                              fechaNacController.text,
-                              centroEmbController.text,
-                              lstImagenes,
-                            ).then((_) {
-                              Navigator.pushNamed(
-                                context,
-                                '/',
-                              );
-                            });
+                            if (args.containsKey('uid')) {
+                              await updateHorse(
+                                args['uid'],
+                                nameController.text,
+                                nroChipController.text,
+                                nameMotherController.text,
+                                nameFatherController.text,
+                                nroReceiverController.text,
+                                fechaNacController.text,
+                                centroEmbController.text,
+                                lstImagenes,
+                              ).then((_) {
+                                Navigator.pushNamed(
+                                  context,
+                                  '/',
+                                );
+                              });
+                            } else {
+                              addHorse(
+                                nameController.text,
+                                nroChipController.text,
+                                nameMotherController.text,
+                                nameFatherController.text,
+                                nroReceiverController.text,
+                                fechaNacController.text,
+                                centroEmbController.text,
+                                lstImagenes,
+                              ).then((_) {
+                                Navigator.pushNamed(
+                                  context,
+                                  '/',
+                                );
+                              });
+                            }
                           }
                         },
                         child: const Text('Guardar')),
