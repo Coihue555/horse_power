@@ -31,7 +31,6 @@ class _FichaCasoViewState extends State<FichaCasoView> {
       cargarDatos({...args});
     });
     lstHorses = getHorses();
-    setState(() {});
   }
 
   void cargarDatos(Map<dynamic, dynamic> args) async {
@@ -46,11 +45,12 @@ class _FichaCasoViewState extends State<FichaCasoView> {
       lstImagenes = tempList;
       nameController.text = selectedHorse;
     }
+    setState(() {});
   }
 
   @override
   void dispose() {
-    nameController.dispose();
+    //nameController.dispose();
     observacionesController.dispose();
     fechaCasoController.dispose();
     lstImagenes.clear();
@@ -82,7 +82,7 @@ class _FichaCasoViewState extends State<FichaCasoView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       FutureBuilder(
-                          future: getItemName('horse', selectedHorse, lstHorses),
+                          future: getItemDescription('name', selectedHorse, lstHorses),
                           builder: (context, snapshot) {
                             if (snapshot.connectionState == ConnectionState.waiting) {
                               return const CircularProgressIndicator();
@@ -145,14 +145,14 @@ class _FichaCasoViewState extends State<FichaCasoView> {
                               await updateCaso(args['uid'], nameController.text, fechaCasoController.text, observacionesController.text, lstImagenes).then((_) {
                                 Navigator.pushNamed(
                                   context,
-                                  '/',
+                                  'lstCasos',
                                 );
                               });
                             } else {
                               addCaso(nameController.text, fechaCasoController.text, observacionesController.text, lstImagenes).then((_) {
                                 Navigator.pushNamed(
                                   context,
-                                  '/',
+                                  'lstCasos',
                                 );
                               });
                             }

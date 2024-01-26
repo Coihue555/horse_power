@@ -49,7 +49,7 @@ class _CasosViewState extends State<CasosView> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextField(
-                    autofocus: true,
+                    //autofocus: true,
                     controller: searchController,
                     onChanged: (value) {
                       setState(() {
@@ -154,8 +154,8 @@ class _CasosViewState extends State<CasosView> {
                                                   Row(
                                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                     children: [
-                                                      TextWidget.headLineMedium(texto: snapshot.data ?? ''),
-                                                      TextWidget.headLineMedium(texto: item['fechaCaso'] ?? ''),
+                                                      TextWidget.headLineSmall(texto: snapshot.data ?? ''),
+                                                      TextWidget.headLineSmall(texto: item['fechaCaso'] ?? ''),
                                                     ],
                                                   ),
                                                   const Divider(
@@ -166,7 +166,7 @@ class _CasosViewState extends State<CasosView> {
                                               );
                                             }
                                           }),
-                                      subtitle: TextWidget.titleLarge(maxlineas: 2, overflow: TextOverflow.fade, texto: item['observaciones']),
+                                      subtitle: TextWidget.titleMedium(maxlineas: 2, overflow: TextOverflow.fade, texto: item['observaciones']),
                                     ),
                                   ),
                                 )),

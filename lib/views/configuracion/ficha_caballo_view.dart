@@ -190,6 +190,55 @@ class _FichaCaballoViewState extends State<FichaCaballoView> {
                               }),
                         ],
                       ),
+                      Text(
+                        'Historial Clínico:',
+                        style: TextStyle(fontSize: 17, color: ThemeModel().colorPrimario),
+                      ),
+                      FutureBuilder(
+                          future: getCasos(),
+                          builder: (context, snapshotCasos) {
+                            var lstNueva = snapshotCasos.data?.where((caso) => caso['caballo'] == args['uid']).toList();
+                            if (snapshotCasos.connectionState == ConnectionState.waiting) {
+                              return const CircularProgressIndicator();
+                            } else if (snapshotCasos.hasError) {
+                              return Text("Errorrrr: ${snapshotCasos.error}");
+                            } else {
+                              return SizedBox(
+                                height: 200,
+                                child: ListView.builder(
+                                    itemCount: lstNueva?.length,
+                                    itemBuilder: (context, index) {
+                                      var item = lstNueva?[index];
+                                      return InkWell(
+                                          onTap: () async {
+                                            await Navigator.pushNamed(context, 'fichaCaso', arguments: {
+                                              "uid": item['uid'],
+                                              "caballo": item['caballo'],
+                                              "fechaCaso": item['fechaCaso'],
+                                              "observaciones": item['observaciones'],
+                                              "lstImagenes": item['lstImagenes'],
+                                            });
+                                            setState(() {});
+                                          },
+                                          child: Column(
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  TextWidget.textLarge(maxlineas: 1, texto: item['observaciones'].substring(0, 20) ?? ''),
+                                                  TextWidget.textLarge(texto: item['fechaCaso'] ?? ''),
+                                                ],
+                                              ),
+                                              const Divider(
+                                                thickness: 0.5,
+                                                height: 2,
+                                              )
+                                            ],
+                                          ));
+                                    }),
+                              );
+                            }
+                          })
                     ],
                   ),
                   SizedBox(
