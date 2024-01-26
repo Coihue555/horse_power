@@ -52,26 +52,53 @@ class ImageUploadWidgetState extends State<ImageUploadWidget> {
                   await showDialog(
                     context: context,
                     builder: (context) {
-                      return AlertDialog(
-                        scrollable: true,
-                        title: TextWidget.headLineSmall(texto: 'Elija una opcion:'),
-                        content: Column(
-                          children: [
-                            ElevatedButton(
-                                onPressed: () {
-                                  pickImage(index, ImageSource.gallery);
-                                  Navigator.pop(context);
-                                },
-                                child: TextWidget.textMedium(texto: 'Subir archivo')),
-                            ElevatedButton(
-                                onPressed: () {
-                                  pickImage(index, ImageSource.camera);
-                                  Navigator.pop(context);
-                                },
-                                child: TextWidget.textMedium(texto: 'Tomar foto')),
-                          ],
-                        ),
-                      );
+                      if (widget.imagesOnline[index] == '') {
+                        return AlertDialog(
+                          scrollable: true,
+                          title: TextWidget.headLineSmall(texto: 'Elija una opcion:'),
+                          content: Column(
+                            children: [
+                              ElevatedButton(
+                                  onPressed: () {
+                                    pickImage(index, ImageSource.gallery);
+                                    Navigator.pop(context);
+                                  },
+                                  child: TextWidget.textMedium(texto: 'Subir archivo')),
+                              ElevatedButton(
+                                  onPressed: () {
+                                    pickImage(index, ImageSource.camera);
+                                    Navigator.pop(context);
+                                  },
+                                  child: TextWidget.textMedium(texto: 'Tomar foto')),
+                            ],
+                          ),
+                        );
+                      } else {
+                        return AlertDialog(
+                          scrollable: true,
+                          contentPadding: const EdgeInsets.all(5),
+                          content: ClipRRect(
+                            borderRadius: const BorderRadius.all(Radius.circular(20)),
+                            child: Image.network(
+                              widget.imagesOnline[index],
+                              fit: BoxFit.contain,
+                              loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                                if (loadingProgress == null) {
+                                  return child;
+                                } else {
+                                  return Center(
+                                    child: CircularProgressIndicator(
+                                      value: loadingProgress.expectedTotalBytes != null
+                                          ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
+                                          : null,
+                                    ),
+                                  );
+                                }
+                              },
+                            ),
+                          ),
+                        );
+                      }
                     },
                   );
                 },
