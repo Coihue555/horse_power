@@ -190,9 +190,32 @@ class _FichaCaballoViewState extends State<FichaCaballoView> {
                               }),
                         ],
                       ),
-                      Text(
-                        'Historial Clínico:',
-                        style: TextStyle(fontSize: 17, color: ThemeModel().colorPrimario),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Historial Clínico:',
+                            style: TextStyle(fontSize: 17, color: ThemeModel().colorPrimario),
+                          ),
+                          InkWell(
+                            onTap: () async {
+                              await Navigator.pushNamed(context, 'fichaCaso', arguments: {"caballo": args['uid'], "desdeFicha": 'S'});
+                              setState(() {});
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.white, border: Border.all(color: Colors.grey), borderRadius: const BorderRadius.all(Radius.circular(5))),
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                              child: Text(
+                                'Nuevo Caso',
+                                style: TextStyle(fontSize: 15, color: ThemeModel().colorPrimario),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 10,
                       ),
                       FutureBuilder(
                           future: getCasos(),

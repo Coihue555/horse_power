@@ -77,7 +77,7 @@ class _CasosViewState extends State<CasosView> {
                                 builder: (context) {
                                   return AlertDialog(
                                     title: const Text('Confirmar'),
-                                    content: Text('Esta seguro de eliminar el caso de ${item['caballo']}?'),
+                                    content: const Text('Esta seguro de eliminar el caso?'),
                                     actions: [
                                       TextButton(
                                           onPressed: () {

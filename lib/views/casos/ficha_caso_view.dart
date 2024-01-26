@@ -45,6 +45,12 @@ class _FichaCasoViewState extends State<FichaCasoView> {
       lstImagenes = tempList;
       nameController.text = selectedHorse;
     }
+    if (args.containsKey('desdeFicha')) {
+      if (args['desdeFicha'] == 'S') {
+        selectedHorse = args['caballo'];
+        nameController.text = selectedHorse;
+      }
+    }
     setState(() {});
   }
 
