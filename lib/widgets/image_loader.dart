@@ -1,10 +1,12 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 import 'package:http/http.dart' as http;
 import 'package:horse_power/global/environment.dart';
 import 'package:horse_power/services/upload_image.dart';
 import 'package:horse_power/widgets/text/text_widget.dart';
+import 'package:image_downloader_web/image_downloader_web.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -207,30 +209,39 @@ class PrevizFullImage extends StatelessWidget {
                 }
               },
             ),
-            Positioned(
-                top: 10,
-                right: 10,
-                child: InkWell(
-                  onTap: () {
-                    saveImage(
-                      context,
-                      urlImagen,
-                      prefixDownload,
-                    );
-                    Navigator.pop(context);
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    decoration:
-                        BoxDecoration(color: Colors.white, border: Border.all(color: Colors.grey), borderRadius: const BorderRadius.all(Radius.circular(10))),
-                    child: TextWidget.textLarge(texto: 'Descargar'),
-                  ),
-                ))
+            if (!kIsWeb)
+              Positioned(
+                  top: 10,
+                  right: 10,
+                  child: InkWell(
+                    onTap: () {
+                      if (kIsWeb) {
+                        downloadImage(urlImagen);
+                      } else {
+                        saveImage(
+                          context,
+                          urlImagen,
+                          prefixDownload,
+                        );
+                      }
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      decoration:
+                          BoxDecoration(color: Colors.white, border: Border.all(color: Colors.grey), borderRadius: const BorderRadius.all(Radius.circular(10))),
+                      child: TextWidget.textLarge(texto: 'Descargar'),
+                    ),
+                  ))
           ],
         ),
       ),
     );
   }
+}
+
+Future<void> downloadImage(String urlImagen) async {
+  await WebImageDownloader.downloadImageFromWeb(urlImagen);
 }
 
 Future<void> saveImage(BuildContext context, String urlImage, String? prefixDownload) async {
@@ -259,7 +270,7 @@ Future<void> saveImage(BuildContext context, String urlImage, String? prefixDown
       message = 'Imagen guardada';
     }
   } catch (e) {
-    message = 'HA ocurrido un error al querer guardar la imagen';
+    message = 'Ha ocurrido un error al querer guardar la imagen';
   }
 
   if (message != null) {
