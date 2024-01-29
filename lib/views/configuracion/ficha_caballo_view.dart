@@ -193,6 +193,7 @@ class _FichaCaballoViewState extends State<FichaCaballoView> {
                           ),
                           const SizedBox(height: 10),
                           ImageUploadWidget(
+                              prefixDownload: nameController.text,
                               imagesOnline: lstImagenes,
                               onImagesSelected: (images) {
                                 setState(() {
@@ -231,18 +232,18 @@ class _FichaCaballoViewState extends State<FichaCaballoView> {
                       FutureBuilder(
                           future: getCasos(),
                           builder: (context, snapshotCasos) {
-                            var lstNueva = snapshotCasos.data?.where((caso) => caso['caballo'] == args['name']).toList();
                             if (snapshotCasos.connectionState == ConnectionState.waiting) {
                               return const CircularProgressIndicator();
                             } else if (snapshotCasos.hasError) {
                               return Text("Errorrrr: ${snapshotCasos.error}");
                             } else {
+                              var lstNueva = snapshotCasos.data?.where((caso) => caso['caballo'] == args['uid']).toList();
                               return SizedBox(
-                                height: 200,
+                                height: lstNueva!.isNotEmpty ? lstNueva.length * 26 : 10,
                                 child: ListView.builder(
-                                    itemCount: lstNueva?.length,
+                                    itemCount: lstNueva.length,
                                     itemBuilder: (context, index) {
-                                      var item = lstNueva?[index];
+                                      var item = lstNueva[index];
                                       return InkWell(
                                           onTap: () async {
                                             await Navigator.pushNamed(context, 'fichaCaso', arguments: {
@@ -259,7 +260,11 @@ class _FichaCaballoViewState extends State<FichaCaballoView> {
                                               Row(
                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 children: [
-                                                  TextWidget.textLarge(maxlineas: 1, texto: item['observaciones'].substring(0, 20) ?? ''),
+                                                  TextWidget.textLarge(
+                                                      maxlineas: 1,
+                                                      texto: item['observaciones'].toString().length < 36
+                                                          ? item['observaciones']
+                                                          : item['observaciones'].substring(0, 35) ?? ''),
                                                   TextWidget.textLarge(texto: item['fechaCaso'] ?? ''),
                                                 ],
                                               ),

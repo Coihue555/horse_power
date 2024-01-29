@@ -146,6 +146,8 @@ class _FichaCasoViewState extends State<FichaCasoView> {
                         onPressed: () async {
                           if (nameController.text.isEmpty) {
                             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Debe seleccionar un Caballo')));
+                          } else if (observacionesController.text.length < 10) {
+                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('La observacion debe tener mas de 10 carácteres')));
                           } else {
                             if (args.containsKey('uid')) {
                               await updateCaso(args['uid'], nameController.text, fechaCasoController.text, observacionesController.text, lstImagenes).then((_) {

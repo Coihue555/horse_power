@@ -1,14 +1,18 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_file_dialog/flutter_file_dialog.dart';
+import 'package:http/http.dart' as http;
 import 'package:horse_power/global/environment.dart';
 import 'package:horse_power/services/upload_image.dart';
 import 'package:horse_power/widgets/text/text_widget.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 
 class ImageUploadWidget extends StatefulWidget {
-  const ImageUploadWidget({Key? key, required this.onImagesSelected, required this.imagesOnline}) : super(key: key);
+  const ImageUploadWidget({Key? key, required this.onImagesSelected, required this.imagesOnline, this.prefixDownload}) : super(key: key);
   final Function(List<String>) onImagesSelected;
   final List<String> imagesOnline;
+  final String? prefixDownload;
 
   @override
   ImageUploadWidgetState createState() => ImageUploadWidgetState();
@@ -74,29 +78,9 @@ class ImageUploadWidgetState extends State<ImageUploadWidget> {
                           ),
                         );
                       } else {
-                        return AlertDialog(
-                          scrollable: true,
-                          contentPadding: const EdgeInsets.all(5),
-                          content: ClipRRect(
-                            borderRadius: const BorderRadius.all(Radius.circular(20)),
-                            child: Image.network(
-                              widget.imagesOnline[index],
-                              fit: BoxFit.contain,
-                              loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-                                if (loadingProgress == null) {
-                                  return child;
-                                } else {
-                                  return Center(
-                                    child: CircularProgressIndicator(
-                                      value: loadingProgress.expectedTotalBytes != null
-                                          ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
-                                          : null,
-                                    ),
-                                  );
-                                }
-                              },
-                            ),
-                          ),
+                        return PrevizFullImage(
+                          urlImagen: widget.imagesOnline[index],
+                          prefixDownload: widget.prefixDownload,
                         );
                       }
                     },
@@ -185,5 +169,100 @@ class ImageUploadWidgetState extends State<ImageUploadWidget> {
             );
           }),
     );
+  }
+}
+
+class PrevizFullImage extends StatelessWidget {
+  const PrevizFullImage({
+    super.key,
+    required this.urlImagen,
+    this.prefixDownload,
+  });
+
+  final String urlImagen;
+  final String? prefixDownload;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      scrollable: true,
+      contentPadding: const EdgeInsets.all(5),
+      content: ClipRRect(
+        borderRadius: const BorderRadius.all(Radius.circular(20)),
+        child: Stack(
+          children: [
+            Image.network(
+              urlImagen,
+              fit: BoxFit.contain,
+              loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                if (loadingProgress == null) {
+                  return child;
+                } else {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      value:
+                          loadingProgress.expectedTotalBytes != null ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1) : null,
+                    ),
+                  );
+                }
+              },
+            ),
+            Positioned(
+                top: 10,
+                right: 10,
+                child: InkWell(
+                  onTap: () {
+                    saveImage(
+                      context,
+                      urlImagen,
+                      prefixDownload,
+                    );
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration:
+                        BoxDecoration(color: Colors.white, border: Border.all(color: Colors.grey), borderRadius: const BorderRadius.all(Radius.circular(10))),
+                    child: TextWidget.textLarge(texto: 'Descargar'),
+                  ),
+                ))
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+Future<void> saveImage(BuildContext context, String urlImage, String? prefixDownload) async {
+  String? message;
+  final scaffoldMessenger = ScaffoldMessenger.of(context);
+
+  try {
+    // Download image
+    final http.Response response = await http.get(Uri.parse(urlImage));
+
+    // Get temporary directory
+    final dir = await getTemporaryDirectory();
+
+    // Create an image name
+    var filename = '${dir.path}/${prefixDownload ?? ''}.png';
+
+    // Save to filesystem
+    final file = File(filename);
+    await file.writeAsBytes(response.bodyBytes);
+
+    // Ask the user to save it
+    final params = SaveFileDialogParams(sourceFilePath: file.path);
+    final finalPath = await FlutterFileDialog.saveFile(params: params);
+
+    if (finalPath != null) {
+      message = 'Imagen guardada';
+    }
+  } catch (e) {
+    message = 'HA ocurrido un error al querer guardar la imagen';
+  }
+
+  if (message != null) {
+    scaffoldMessenger.showSnackBar(SnackBar(content: Text(message)));
   }
 }
