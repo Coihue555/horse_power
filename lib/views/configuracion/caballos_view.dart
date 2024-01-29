@@ -155,41 +155,44 @@ class _CaballosViewState extends State<CaballosView> {
                                         mainAxisAlignment: MainAxisAlignment.start,
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          if (item['fechaNac'] != null && item['fechaNac'] != '') Text('Nacido: ${item['fechaNac'] ?? ''}'),
-                                          FutureBuilder(
-                                              future: getItemDescription('madre', item['madre'], lstMadres),
-                                              builder: (context, snapshotMadre) {
-                                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                                  return const CircularProgressIndicator();
-                                                } else if (snapshot.hasError) {
-                                                  return Text("Errorrrr: ${snapshot.error}");
-                                                } else {
-                                                  return Text('Madre: ${snapshotMadre.data ?? ''}');
-                                                }
-                                              }),
-                                          FutureBuilder(
-                                              future: getItemDescription('padre', item['padre'], lstPadres),
-                                              builder: (context, snapshotPadre) {
-                                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                                  return const CircularProgressIndicator();
-                                                } else if (snapshot.hasError) {
-                                                  return Text("Errorrrr: ${snapshot.error}");
-                                                } else {
-                                                  return Text('Padre: ${snapshotPadre.data ?? ''}');
-                                                }
-                                              }),
-                                          FutureBuilder(
-                                              future: getItemDescription('receptora', item['receptora'], lstReceptoras),
-                                              builder: (context, snapshotReceptora) {
-                                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                                  return const CircularProgressIndicator();
-                                                } else if (snapshot.hasError) {
-                                                  return Text("Errorrrr: ${snapshot.error}");
-                                                } else {
-                                                  return Text('Nº Receptora: ${snapshotReceptora.data ?? ''}');
-                                                }
-                                              }),
+                                          if (item['fechaNac'] != null && item['fechaNac'] != '') Text('Fecha de Nacimiento: ${item['fechaNac'] ?? ''}'),
+                                          if (item['madre'] != null && item['madre'] != '') Text('Madre: ${item['madre'] ?? ''}'),
+                                          if (item['padre'] != null && item['padre'] != '') Text('Padre: ${item['padre'] ?? ''}'),
+                                          if (item['receptora'] != null && item['receptora'] != '') Text('Receptora: ${item['receptora'] ?? ''}'),
                                           if (item['centroEmb'] != null && item['centroEmb'] != '') Text('Centro Embriones: ${item['centroEmb'] ?? ''}'),
+                                          // FutureBuilder(
+                                          //     future: getItemDescription('madre', item['madre'], lstMadres),
+                                          //     builder: (context, snapshotMadre) {
+                                          //       if (snapshot.connectionState == ConnectionState.waiting) {
+                                          //         return const CircularProgressIndicator();
+                                          //       } else if (snapshot.hasError) {
+                                          //         return Text("Errorrrr: ${snapshot.error}");
+                                          //       } else {
+                                          //         return Text('Madre: ${snapshotMadre.data ?? ''}');
+                                          //       }
+                                          //     }),
+                                          // FutureBuilder(
+                                          //     future: getItemDescription('padre', item['padre'], lstPadres),
+                                          //     builder: (context, snapshotPadre) {
+                                          //       if (snapshot.connectionState == ConnectionState.waiting) {
+                                          //         return const CircularProgressIndicator();
+                                          //       } else if (snapshot.hasError) {
+                                          //         return Text("Errorrrr: ${snapshot.error}");
+                                          //       } else {
+                                          //         return Text('Padre: ${snapshotPadre.data ?? ''}');
+                                          //       }
+                                          //     }),
+                                          // FutureBuilder(
+                                          //     future: getItemDescription('receptora', item['receptora'], lstReceptoras),
+                                          //     builder: (context, snapshotReceptora) {
+                                          //       if (snapshot.connectionState == ConnectionState.waiting) {
+                                          //         return const CircularProgressIndicator();
+                                          //       } else if (snapshot.hasError) {
+                                          //         return Text("Errorrrr: ${snapshot.error}");
+                                          //       } else {
+                                          //         return Text('Nº Receptora: ${snapshotReceptora.data ?? ''}');
+                                          //       }
+                                          //     }),
                                         ],
                                       ),
                                     ),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:horse_power/services/firebase_service.dart';
 import 'package:horse_power/theme/theme.dart';
-import 'package:horse_power/widgets/dropdown_widget.dart';
 import 'package:horse_power/widgets/image_loader.dart';
 import 'package:horse_power/widgets/text/text_widget.dart';
 import 'package:horse_power/widgets/textfield/textfield_widget.dart';
@@ -114,60 +113,72 @@ class _FichaCaballoViewState extends State<FichaCaballoView> {
                           onSubmitted: (value) {
                             fechaNacController.text = value;
                           }),
-                      FutureBuilder(
-                          future: getItemDescription('madre', nameMotherController.text, lstMadres),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState == ConnectionState.waiting) {
-                              return const CircularProgressIndicator();
-                            } else if (snapshot.hasError) {
-                              return Text("Errorrrr: ${snapshot.error}");
-                            } else {
-                              return DynamicDropDown(
-                                label: 'madre',
-                                lstItems: getMadres(),
-                                valorSeleccionado: snapshot.data,
-                                onChanged: (p0) {
-                                  nameMotherController.text = p0;
-                                },
-                              );
-                            }
-                          }),
-                      FutureBuilder(
-                          future: getItemDescription('padre', nameFatherController.text, lstPadres),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState == ConnectionState.waiting) {
-                              return const CircularProgressIndicator();
-                            } else if (snapshot.hasError) {
-                              return Text("Errorrrr: ${snapshot.error}");
-                            } else {
-                              return DynamicDropDown(
-                                label: 'padre',
-                                lstItems: lstPadres,
-                                valorSeleccionado: snapshot.data,
-                                onChanged: (p0) {
-                                  nameFatherController.text = p0;
-                                },
-                              );
-                            }
-                          }),
-                      FutureBuilder(
-                          future: getItemDescription('receptora', nroReceiverController.text, lstReceptoras),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState == ConnectionState.waiting) {
-                              return const CircularProgressIndicator();
-                            } else if (snapshot.hasError) {
-                              return Text("Errorrrr: ${snapshot.error}");
-                            } else {
-                              return DynamicDropDown(
-                                label: 'receptora',
-                                lstItems: lstReceptoras,
-                                valorSeleccionado: snapshot.data,
-                                onChanged: (p0) {
-                                  nroReceiverController.text = p0;
-                                },
-                              );
-                            }
-                          }),
+                      TextfieldWidget.texto(
+                        labelTitulo: 'Madre:',
+                        controller: nameMotherController,
+                      ),
+                      TextfieldWidget.texto(
+                        labelTitulo: 'Padre:',
+                        controller: nameFatherController,
+                      ),
+                      TextfieldWidget.texto(
+                        labelTitulo: 'Nº Receptora:',
+                        controller: nroReceiverController,
+                      ),
+                      // FutureBuilder(
+                      //     future: getItemDescription('madre', nameMotherController.text, lstMadres),
+                      //     builder: (context, snapshot) {
+                      //       if (snapshot.connectionState == ConnectionState.waiting) {
+                      //         return const CircularProgressIndicator();
+                      //       } else if (snapshot.hasError) {
+                      //         return Text("Errorrrr: ${snapshot.error}");
+                      //       } else {
+                      //         return DynamicDropDown(
+                      //           label: 'madre',
+                      //           lstItems: getMadres(),
+                      //           valorSeleccionado: snapshot.data,
+                      //           onChanged: (p0) {
+                      //             nameMotherController.text = p0;
+                      //           },
+                      //         );
+                      //       }
+                      //     }),
+                      // FutureBuilder(
+                      //     future: getItemDescription('padre', nameFatherController.text, lstPadres),
+                      //     builder: (context, snapshot) {
+                      //       if (snapshot.connectionState == ConnectionState.waiting) {
+                      //         return const CircularProgressIndicator();
+                      //       } else if (snapshot.hasError) {
+                      //         return Text("Errorrrr: ${snapshot.error}");
+                      //       } else {
+                      //         return DynamicDropDown(
+                      //           label: 'padre',
+                      //           lstItems: lstPadres,
+                      //           valorSeleccionado: snapshot.data,
+                      //           onChanged: (p0) {
+                      //             nameFatherController.text = p0;
+                      //           },
+                      //         );
+                      //       }
+                      //     }),
+                      // FutureBuilder(
+                      //     future: getItemDescription('receptora', nroReceiverController.text, lstReceptoras),
+                      //     builder: (context, snapshot) {
+                      //       if (snapshot.connectionState == ConnectionState.waiting) {
+                      //         return const CircularProgressIndicator();
+                      //       } else if (snapshot.hasError) {
+                      //         return Text("Errorrrr: ${snapshot.error}");
+                      //       } else {
+                      //         return DynamicDropDown(
+                      //           label: 'receptora',
+                      //           lstItems: lstReceptoras,
+                      //           valorSeleccionado: snapshot.data,
+                      //           onChanged: (p0) {
+                      //             nroReceiverController.text = p0;
+                      //           },
+                      //         );
+                      //       }
+                      //     }),
                       TextfieldWidget.texto(
                         labelTitulo: 'Centro de embriones:',
                         controller: centroEmbController,
@@ -220,7 +231,7 @@ class _FichaCaballoViewState extends State<FichaCaballoView> {
                       FutureBuilder(
                           future: getCasos(),
                           builder: (context, snapshotCasos) {
-                            var lstNueva = snapshotCasos.data?.where((caso) => caso['caballo'] == args['uid']).toList();
+                            var lstNueva = snapshotCasos.data?.where((caso) => caso['caballo'] == args['name']).toList();
                             if (snapshotCasos.connectionState == ConnectionState.waiting) {
                               return const CircularProgressIndicator();
                             } else if (snapshotCasos.hasError) {
