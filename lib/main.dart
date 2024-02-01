@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:horse_power/views/sesion.dart';
+import 'firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:horse_power/views/casos/casos_view.dart';
 import 'package:horse_power/views/casos/ficha_caso_view.dart';
 import 'package:horse_power/views/configuracion/caballos_view.dart';
@@ -10,8 +13,6 @@ import 'package:horse_power/views/configuracion/madres_view.dart';
 import 'package:horse_power/views/configuracion/padres_view.dart';
 import 'package:horse_power/views/configuracion/receptoras_view.dart';
 import 'package:horse_power/views/home_view.dart';
-import 'firebase_options.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,7 +28,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(debugShowCheckedModeBanner: false, title: 'Horse Power', initialRoute: '/', routes: {
-      '/': (context) => const Home(),
+      '/': (context) => const SesionView(),
+      "home": (context) => const Home(),
       'lstCaballos': (context) => const CaballosView(),
       'fichaCaballo': (context) => const FichaCaballoView(),
       'lstMadres': (context) => const MadresView(),

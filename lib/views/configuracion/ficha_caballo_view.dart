@@ -32,7 +32,8 @@ class _FichaCaballoViewState extends State<FichaCaballoView> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      args = (ModalRoute.of(context)!.settings.arguments as Map);
+      var tempMap = ModalRoute.of(context)!.settings.arguments == null ? {} : ModalRoute.of(context)!.settings.arguments as Map;
+      args = {...tempMap};
       cargarDatos({...args});
     });
     lstMadres = getMadres();

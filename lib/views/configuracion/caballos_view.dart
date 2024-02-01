@@ -224,8 +224,17 @@ class _CaballosViewState extends State<CaballosView> {
       floatingActionButton: FloatingActionButton(
         heroTag: 'tag2',
         onPressed: () async {
-          await Navigator.pushNamed(context, 'fichaCaballo');
-          setState(() {});
+          await Navigator.pushNamed(context, 'fichaCaballo', arguments: {
+            "name": '',
+            "nroChip": '',
+            "uid": '',
+            "madre": '',
+            "padre": '',
+            "receptora": '',
+            "fechaNac": '',
+            "centroEmb": '',
+            "lstImagenes": [],
+          });
         },
         child: const Icon(Icons.add),
       ),

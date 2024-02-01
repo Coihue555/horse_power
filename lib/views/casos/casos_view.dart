@@ -154,7 +154,9 @@ class _CasosViewState extends State<CasosView> {
                                                   Row(
                                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                     children: [
-                                                      TextWidget.headLineSmall(texto: snapshot.data ?? ''),
+                                                      (snapshot.data == 'Seleccione una opcion')
+                                                          ? TextWidget.titleMedium(texto: 'Caballo eliminado')
+                                                          : TextWidget.headLineSmall(texto: snapshot.data ?? ''),
                                                       TextWidget.headLineSmall(texto: item['fechaCaso'] ?? ''),
                                                     ],
                                                   ),

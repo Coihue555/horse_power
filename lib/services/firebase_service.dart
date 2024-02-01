@@ -1,12 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:horse_power/views/auth.dart';
 
 FirebaseFirestore db = FirebaseFirestore.instance;
+final User? user = Auth().currentUser;
 
 Future<List> getHorses() async {
   List horses = [];
   CollectionReference collectionReferenceHorses = db.collection('horses');
 
-  QuerySnapshot queryHorses = await collectionReferenceHorses.get();
+  QuerySnapshot queryHorses =
+      await collectionReferenceHorses.where(Filter.or(Filter("usuario", isEqualTo: user!.email), Filter("usuario", isEqualTo: 'no-user'))).get();
   for (var doc in queryHorses.docs) {
     final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     final horse = {
